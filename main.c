@@ -92,20 +92,26 @@ int main() // introducere argc, argv
                 printf("Enter the number of columns: ");
                 scanf("%d", &columnsNumber);
 
+                image = CreateGradientImage(windowWidth, windowHeight, columnsNumber);
+
+                if (image == NULL) 
+                {
+                    printf("Memory allocation failed!");
+                    return 1;
+                }
+
                 FILE* rawFile2 = fopen("gradient.raw", "wb");
                 if (rawFile2 == NULL)
                 {
                     printf("File could not be opened!");
-                    free(gradient);
+                    FreeImage(image);
                     return 1;
                 }
 
-                image = CreateGradientImage(windowWidth, windowHeight, columnsNumber);
-
                 fwrite(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile2);
 
-                fclose(rawFile2);
                 FreeImage(image);
+                fclose(rawFile2);
 
                 break;
             case 3:

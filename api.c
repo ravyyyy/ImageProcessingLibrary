@@ -12,6 +12,13 @@
 #include "sobelvertical.h"
 #include "sobel.h"
 
+void AllocImage(Image* image, int width, int height)
+{
+    image->width = width;
+    image->height = height;
+    image->data = malloc(width * height * 3);
+}
+
 void FreeImage(Image* image)
 {
     if (image != NULL)
@@ -28,9 +35,19 @@ void FreeImage(Image* image)
 Image* CreateGradientImage(int width, int height, int columnsNumber)
 {
     Image* gradientImage = malloc(sizeof(Image));
-    gradientImage->width = width;
-    gradientImage->height = height;
-    gradientImage->data = malloc(width * height * 3);
+    
+    if (gradientImage == NULL) 
+    {
+        return NULL;
+    }
+
+    AllocImage(gradientImage, width, height);
+
+    if (gradientImage->data == NULL)
+    {
+        free(gradientImage);
+        return NULL;
+    }
 
     DrawGradient(gradientImage->data, width, height, columnsNumber);
 

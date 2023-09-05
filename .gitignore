@@ -1,5 +1,7 @@
 html/
 latex/
+program.dSYM/
 main.dSYM/
+.vscode/
 
 *.raw
