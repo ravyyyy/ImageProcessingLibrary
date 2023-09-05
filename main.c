@@ -10,6 +10,7 @@
 #include "rotatebilinear.h"
 #include "sobelhorizontal.h"
 #include "rgbtograyscale.h"
+#include "sobelvertical.h"
 
 int main() // introducere argc, argv, conversie rgb to grayscale
 {
@@ -36,6 +37,7 @@ int main() // introducere argc, argv, conversie rgb to grayscale
         printf("8. Rotate downloaded image\n");
         printf("9. Sobel filter horizontal\n");
         printf("10. Convert RGB image to Grayscale\n");
+        printf("11. Sobel filter vertical\n");
         printf("0. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &userChoice);
@@ -517,7 +519,59 @@ int main() // introducere argc, argv, conversie rgb to grayscale
                 int imageWidth = 875;
                 int imageHeight = 652;
 
-                unsigned char* imag = (unsigned char*)malloc(imageWidth * imageHeight * 3);
+                unsigned char* ima = (unsigned char*)malloc(imageWidth * imageHeight * 3);
+                if (ima == NULL)
+                {
+                    printf("Memory allocation failed!");
+                    free(ima);
+                    return 1;
+                }
+
+                FILE* imaF = fopen("example.raw", "rb");
+                if (imaF == NULL)
+                {
+                    printf("File could not be opened!");
+                    free(ima);
+                    fclose(imaF);
+                    return 1;
+                }
+
+                fread(ima, sizeof(unsigned char), imageWidth * imageHeight * 3, imaF);
+                fclose(imaF);
+
+                unsigned char* ima2 = (unsigned char*)malloc(imageWidth * imageHeight);
+                if (ima2 == NULL)
+                {
+                    printf("Memory allocation failed!");
+                    free(ima2);
+                    return 1;
+                }
+
+                FILE* imaF2 = fopen("grayscaleimg.raw", "wb");
+                if (imaF2 == NULL)
+                {
+                    printf("File could not be opened!");
+                    free(ima2);
+                    fclose(imaF2);
+                    return 1;
+                }
+
+                ConvertImage(ima, ima2, imageWidth, imageHeight);
+
+                fwrite(ima2, sizeof(unsigned char), imageWidth * imageHeight, imaF2);
+                fclose(imaF2);
+
+                free(ima);
+                free(ima2);
+
+                break;
+            case 11:
+                printf("SOBEL FILTER VERTICAL\n\n");
+
+                int imagWidth = 875;
+                int imagHeight = 652;
+
+                unsigned char* imag = (unsigned char*)malloc(imagWidth * imagHeight);
                 if (imag == NULL)
                 {
                     printf("Memory allocation failed!");
@@ -525,7 +579,7 @@ int main() // introducere argc, argv, conversie rgb to grayscale
                     return 1;
                 }
 
-                FILE* imagF = fopen("example.raw", "rb");
+                FILE* imagF = fopen("grayscaleimg.raw", "rb");
                 if (imagF == NULL)
                 {
                     printf("File could not be opened!");
@@ -534,10 +588,10 @@ int main() // introducere argc, argv, conversie rgb to grayscale
                     return 1;
                 }
 
-                fread(imag, sizeof(unsigned char), imageWidth * imageHeight * 3, imagF);
-                fclose(imgF);
+                fread(imag, sizeof(unsigned char), imagWidth * imagHeight, imagF);
+                fclose(imagF);
 
-                unsigned char* imag2 = (unsigned char*)malloc(imageWidth * imageHeight);
+                unsigned char* imag2 = (unsigned char*)malloc(imagWidth * imagHeight);
                 if (imag2 == NULL)
                 {
                     printf("Memory allocation failed!");
@@ -545,7 +599,7 @@ int main() // introducere argc, argv, conversie rgb to grayscale
                     return 1;
                 }
 
-                FILE* imagF2 = fopen("grayscaleimg.raw", "wb");
+                FILE* imagF2 = fopen("sobelvertical.raw", "wb");
                 if (imagF2 == NULL)
                 {
                     printf("File could not be opened!");
@@ -554,9 +608,9 @@ int main() // introducere argc, argv, conversie rgb to grayscale
                     return 1;
                 }
 
-                ConvertImage(imag, imag2, imageWidth, imageHeight);
+                ApplySobelVertical(imag, imag2, imagWidth, imagHeight);
 
-                fwrite(imag2, sizeof(unsigned char), imageWidth * imageHeight, imagF2);
+                fwrite(imag2, sizeof(unsigned char), imagWidth * imagHeight, imagF2);
                 fclose(imagF2);
 
                 free(imag);
