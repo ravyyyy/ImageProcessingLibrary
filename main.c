@@ -11,6 +11,7 @@
 #include "sobelhorizontal.h"
 #include "rgbtograyscale.h"
 #include "sobelvertical.h"
+#include "sobel.h"
 
 int main() // introducere argc, argv, conversie rgb to grayscale
 {
@@ -38,6 +39,7 @@ int main() // introducere argc, argv, conversie rgb to grayscale
         printf("9. Sobel filter horizontal\n");
         printf("10. Convert RGB image to Grayscale\n");
         printf("11. Sobel filter vertical\n");
+        printf("12. Full Sobel filter\n");
         printf("0. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &userChoice);
@@ -615,6 +617,58 @@ int main() // introducere argc, argv, conversie rgb to grayscale
 
                 free(imag);
                 free(imag2);
+
+                break;
+            case 12:
+                printf("FULL SOBEL FILTER\n\n");
+
+                int imaggWidth = 875;
+                int imaggHeight = 652;
+
+                unsigned char* imagg = (unsigned char*)malloc(imaggWidth * imaggHeight);
+                if (imagg == NULL)
+                {
+                    printf("Memory allocation failed!");
+                    free(imagg);
+                    return 1;
+                }
+
+                FILE* imaggF = fopen("grayscaleimg.raw", "rb");
+                if (imaggF == NULL)
+                {
+                    printf("File could not be opened!");
+                    free(imagg);
+                    fclose(imaggF);
+                    return 1;
+                }
+
+                fread(imagg, sizeof(unsigned char), imaggWidth * imaggHeight, imaggF);
+                fclose(imaggF);
+
+                unsigned char* imagg2 = (unsigned char*)malloc(imaggWidth * imaggHeight);
+                if (imagg2 == NULL)
+                {
+                    printf("Memory allocation failed!");
+                    free(imagg2);
+                    return 1;
+                }
+
+                FILE* imaggF2 = fopen("sobel.raw", "wb");
+                if (imaggF2 == NULL)
+                {
+                    printf("File could not be opened!");
+                    free(imagg2);
+                    fclose(imaggF2);
+                    return 1;
+                }
+
+                ApplySobel(imagg, imagg2, imaggWidth, imaggHeight);
+
+                fwrite(imagg2, sizeof(unsigned char), imaggWidth * imaggHeight, imaggF2);
+                fclose(imaggF2);
+
+                free(imagg);
+                free(imagg2);
 
                 break;
             case 0:
