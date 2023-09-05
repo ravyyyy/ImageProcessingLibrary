@@ -1,3 +1,5 @@
+#include <math.h>
+
 /**
    @file
  * @brief Generates a gradient pattern based on hue and intensity.

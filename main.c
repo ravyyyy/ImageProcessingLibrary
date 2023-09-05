@@ -13,7 +13,7 @@
 #include "sobelvertical.h"
 #include "sobel.h"
 
-int main() // introducere argc, argv, conversie rgb to grayscale
+int main() // introducere argc, argv
 {
     int windowWidth;
     int windowHeight;

@@ -1,3 +1,5 @@
+#include <math.h>
+
 /**
    @file
  * @brief This method is used to draw a star-like pattern on a canvas. The pattern is created by calculating the distance of each pixel
