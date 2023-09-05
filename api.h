@@ -7,4 +7,10 @@ typedef struct {
     unsigned char* data;
 } Image;
 
+Image* CreateGradientImage(int width, int height, int columnsNumber);
+
+Image* CreateSiemensStar(int width, int height, int radius, int linesNumber);
+
+void FreeImage(Image* image);
+
 #endif

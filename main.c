@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "api.h"
+
 #include "drawstar.h"
-#include "drawgradient.h"
 #include "rotate90.h"
 #include "rotate.h"
 #include "rotateincomplete.h"
@@ -15,6 +16,8 @@
 
 int main() // introducere argc, argv
 {
+    Image* image;
+
     int windowWidth;
     int windowHeight;
     int starRadius;
@@ -89,15 +92,6 @@ int main() // introducere argc, argv
                 printf("Enter the number of columns: ");
                 scanf("%d", &columnsNumber);
 
-                gradient = (unsigned char*)malloc(windowWidth * windowHeight * 3);
-                if (gradient == NULL)
-                {
-                    printf("Memory allocation failed for gradient!");
-                    return 1;
-                }
-
-                DrawGradient(gradient, windowWidth, windowHeight, columnsNumber);
-
                 FILE* rawFile2 = fopen("gradient.raw", "wb");
                 if (rawFile2 == NULL)
                 {
@@ -106,11 +100,12 @@ int main() // introducere argc, argv
                     return 1;
                 }
 
-                fwrite(gradient, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile2);
+                image = CreateGradientImage(windowWidth, windowHeight, columnsNumber);
 
-    
+                fwrite(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile2);
+
                 fclose(rawFile2);
-                //free(gradient);
+                FreeImage(image);
 
                 break;
             case 3:
