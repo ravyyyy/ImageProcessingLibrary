@@ -1,5 +1,3 @@
-#include <math.h>
-
 #include "drawgradient.h"
 
 #define PI 3.14159
