@@ -1,0 +1,35 @@
+\doxysection{drawstar.\+c File Reference}
+\hypertarget{drawstar_8c}{}\label{drawstar_8c}\index{drawstar.c@{drawstar.c}}
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include "{}drawstar.\+h"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{drawstar_8c_a7dec35c602913cd92cf79c85a7b6410f}{Draw\+Star}} (unsigned char \texorpdfstring{$\ast$}{*}star, int window\+Width, int window\+Height, int star\+Radius, int lines\+Number)
+\begin{DoxyCompactList}\small\item\em This method is used to draw a star-\/like pattern on a canvas. The pattern is created by calculating the distance of each pixel from the center of the canvas and comparing to a given \textquotesingle{}star\+Radius\textquotesingle{}. If the distance is within the specified radius, the pixel is part of the star pattern; otherwise, it\textquotesingle{}s set to a background color. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{drawstar_8c_a7dec35c602913cd92cf79c85a7b6410f}\label{drawstar_8c_a7dec35c602913cd92cf79c85a7b6410f} 
+\index{drawstar.c@{drawstar.c}!DrawStar@{DrawStar}}
+\index{DrawStar@{DrawStar}!drawstar.c@{drawstar.c}}
+\doxysubsubsection{\texorpdfstring{DrawStar()}{DrawStar()}}
+{\footnotesize\ttfamily void Draw\+Star (\begin{DoxyParamCaption}\item[{unsigned char \texorpdfstring{$\ast$}{*}}]{star,  }\item[{int}]{window\+Width,  }\item[{int}]{window\+Height,  }\item[{int}]{star\+Radius,  }\item[{int}]{lines\+Number }\end{DoxyParamCaption})}
+
+
+
+This method is used to draw a star-\/like pattern on a canvas. The pattern is created by calculating the distance of each pixel from the center of the canvas and comparing to a given \textquotesingle{}star\+Radius\textquotesingle{}. If the distance is within the specified radius, the pixel is part of the star pattern; otherwise, it\textquotesingle{}s set to a background color. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em star} & A pointer to the pixel data of the canvas. \\
+\hline
+{\em window\+Width} & The width of the canvas. \\
+\hline
+{\em window\+Height} & The height of the canvas. \\
+\hline
+{\em star\+Radius} & The radius within which the star pattern is drawn. \\
+\hline
+{\em lines\+Number} & The number of lines (arms) the star should have. \\
+\hline
+\end{DoxyParams}
