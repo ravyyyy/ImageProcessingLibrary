@@ -2,17 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "api.h"
-
-#include "drawstar.h"
-#include "rotate90.h"
-#include "rotate.h"
-#include "rotateincomplete.h"
-#include "rotatebilinear.h"
-#include "sobelhorizontal.h"
-#include "rgbtograyscale.h"
-#include "sobelvertical.h"
-#include "sobel.h"
+#include "API/inc/api.h"
 
 int main() // introducere argc, argv
 {
@@ -23,11 +13,15 @@ int main() // introducere argc, argv
     int starRadius;
     int linesNumber;
     int columnsNumber;
-    bool isMenuOpen = true;
     int userChoice;
     int degrees;
     int choiceCustom;
+
+    bool isMenuOpen = true;
+    
     FILE* rawFile;
+    FILE* rotatedFileCustom;
+    
     unsigned char* star;
     unsigned char* gradient;
 
@@ -166,7 +160,7 @@ int main() // introducere argc, argv
                     output = RotateImageCustomDegrees(image, windowWidth, windowHeight, degrees);
                 }
 
-                FILE* rotatedFileCustom = fopen("rotated_image_custom_gradient.raw", "wb");
+                rotatedFileCustom = fopen("rotated_image_custom.raw", "wb");
                 if (rotatedFileCustom == NULL)
                 {
                     printf("File could not be opened!");
@@ -232,7 +226,7 @@ int main() // introducere argc, argv
                     output = RotateImageCustomDegreesIncomplete(image, windowWidth, windowHeight, degrees);
                 }
 
-                FILE* rotatedFileCustom = fopen("rotated_image_custom_gradient_incomplete.raw", "wb");
+                rotatedFileCustom = fopen("rotated_image_custom_incomplete.raw", "wb");
                 if (rotatedFileCustom == NULL)
                 {
                     printf("File could not be opened!");
@@ -249,7 +243,7 @@ int main() // introducere argc, argv
                 FreeImage(output);
 
                 break;
-            case 5:
+            /*case 5:
                 printf("ROTATE CUSTOM IMAGE\n\n");
                 printf("Enter name of file: ");
                 char fileName[100];
@@ -620,7 +614,7 @@ int main() // introducere argc, argv
                 free(imagg);
                 free(imagg2);
 
-                break;
+                break;*/
             case 0:
                 isMenuOpen = false;
                 printf("Goodbye!");

@@ -3,5 +3,6 @@ latex/
 program.dSYM/
 main.dSYM/
 .vscode/
+build/
 
 *.raw
