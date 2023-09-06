@@ -147,22 +147,6 @@ int main() // introducere argc, argv
                     image->width = windowWidth;
 
                     output = RotateImageCustomDegrees(image, windowWidth, windowHeight, degrees);
-
-                    FILE* rotatedFileCustom = fopen("rotated_image_custom_gradient.raw", "wb");
-                    if (rotatedFileCustom == NULL)
-                    {
-                        printf("File could not be opened!");
-                        FreeImage(image);
-                        FreeImage(output);
-                        fclose(rotatedFileCustom);
-                        return 1;
-                    } 
-
-                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rotatedFileCustom);
-                    fclose(rotatedFileCustom);
-
-                    //FreeImage(image);
-                    FreeImage(output);
                 }
                 else
                 {
@@ -180,86 +164,89 @@ int main() // introducere argc, argv
                     image->width = windowWidth;
 
                     output = RotateImageCustomDegrees(image, windowWidth, windowHeight, degrees);
-
-                    FILE* rotatedFileCustom = fopen("rotated_image_custom_siemens_star.raw", "wb");
-                    if (rotatedFileCustom == NULL)
-                    {
-                        printf("File could not be opened!");
-                        FreeImage(image);
-                        FreeImage(output);
-                        fclose(rotatedFileCustom);
-                        return 1;
-                    } 
-
-                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rotatedFileCustom);
-                    fclose(rotatedFileCustom);
-
-                    //FreeImage(image);
-                    FreeImage(output);
                 }
+
+                FILE* rotatedFileCustom = fopen("rotated_image_custom_gradient.raw", "wb");
+                if (rotatedFileCustom == NULL)
+                {
+                    printf("File could not be opened!");
+                    FreeImage(image);
+                    FreeImage(output);
+                    fclose(rotatedFileCustom);
+                    return 1;
+                } 
+
+                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rotatedFileCustom);
+                fclose(rotatedFileCustom);
+
+                free(image->data);
+                FreeImage(output);
 
                 break;
             case 4:
                 printf("ROTATE CUSTOM (incomplete)\n\n");
                 printf("Enter the degrees: ");
-                int degreesIncomplete;
-                scanf("%d", &degreesIncomplete);
-                printf("1. Siemens star\n");
-                printf("2. Gradient\n");
+                scanf("%d", &degrees);
+                printf("1. Gradient\n");
+                printf("2. Siemens star\n");
                 printf("Choose the image you want to rotate: ");
-                int choiceCustomIncomplete;
-                scanf("%d", &choiceCustomIncomplete);
+                scanf("%d", &choiceCustom);
 
                 printf("Enter width of image: ");
                 scanf("%d", &windowWidth);
                 printf("Enter height of image: ");
                 scanf("%d", &windowHeight);
 
-                unsigned char* rotatedImageCustomIncomplete = (unsigned char*)malloc(windowWidth * windowHeight * 3);
-                if (rotatedImageCustomIncomplete == NULL)
+                if (choiceCustom == 1)
                 {
-                    printf("Memory allocation failed!");
-                    return 1;
-                }
+                    rawFile = fopen("gradient.raw", "rb");
 
-                if (choiceCustomIncomplete == 1)
-                {
-                    RotateImageCustomIncomplete(star, rotatedImageCustomIncomplete, windowWidth, windowHeight, degreesIncomplete);
-
-                    FILE* rotatedFileCustomIncomplete = fopen("rotated_image_custom_incomplete.raw", "wb");
-                    if (rotatedFileCustomIncomplete == NULL)
+                    if (rawFile == NULL)
                     {
                         printf("File could not be opened!");
-                        free(star);
-                        free(rotatedImageCustomIncomplete);
                         return 1;
-                    } 
+                    }
 
-                    fwrite(rotatedImageCustomIncomplete, sizeof(unsigned char), windowWidth * windowHeight * 3, rotatedFileCustomIncomplete);
-                    fclose(rotatedFileCustomIncomplete);
+                    image->data = (unsigned char*)malloc(windowWidth * windowHeight * 3);
+                    fread(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    image->height = windowHeight;
+                    image->width = windowWidth;
 
-                    free(star);
-                    free(rotatedImageCustomIncomplete);
+                    output = RotateImageCustomDegreesIncomplete(image, windowWidth, windowHeight, degrees);                    
                 }
                 else
                 {
-                    RotateImageCustomIncomplete(gradient, rotatedImageCustomIncomplete, windowWidth, windowHeight, degreesIncomplete);
+                    rawFile = fopen("siemens_star.raw", "rb");
 
-                    FILE* rotatedFileCustomIncomplete = fopen("rotated_image_custom_incomplete.raw", "wb");
-                    if (rotatedFileCustomIncomplete == NULL)
+                    if (rawFile == NULL)
                     {
                         printf("File could not be opened!");
-                        free(gradient);
-                        free(rotatedFileCustomIncomplete);
                         return 1;
-                    } 
+                    }
 
-                    fwrite(rotatedImageCustomIncomplete, sizeof(unsigned char), windowWidth * windowHeight * 3, rotatedFileCustomIncomplete);
-                    fclose(rotatedFileCustomIncomplete);
+                    image->data = (unsigned char*)malloc(windowWidth * windowHeight * 3);
+                    fread(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    image->height = windowHeight;
+                    image->width = windowWidth;
 
-                    free(gradient);
-                    free(rotatedImageCustomIncomplete);
+                    output = RotateImageCustomDegreesIncomplete(image, windowWidth, windowHeight, degrees);
                 }
+
+                FILE* rotatedFileCustom = fopen("rotated_image_custom_gradient_incomplete.raw", "wb");
+                if (rotatedFileCustom == NULL)
+                {
+                    printf("File could not be opened!");
+                    FreeImage(image);
+                    FreeImage(output);
+                    fclose(rotatedFileCustom);
+                    return 1;
+                } 
+
+                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rotatedFileCustom);
+                fclose(rotatedFileCustom);
+
+                free(image->data);
+                FreeImage(output);
 
                 break;
             case 5:

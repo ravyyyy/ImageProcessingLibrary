@@ -13,5 +13,6 @@ void FreeImage(Image* image);
 Image* CreateSiemensStar(int width, int height, int radius, int linesNumber);
 Image* CreateGradientImage(int width, int height, int columnsNumber);
 Image* RotateImageCustomDegrees(Image* input, int width, int height, int degrees);
+Image* RotateImageCustomDegreesIncomplete(Image* input, int width, int height, int degrees);
 
 #endif
