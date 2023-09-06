@@ -25,8 +25,9 @@ int main() // introducere argc, argv
     int columnsNumber;
     bool isMenuOpen = true;
     int userChoice;
-    unsigned char* gradient = NULL;
-    unsigned char* star = NULL;
+    FILE* rawFile;
+    unsigned char* star;
+    unsigned char* gradient;
 
     while(isMenuOpen)
     {
@@ -60,28 +61,27 @@ int main() // introducere argc, argv
                 scanf("%d", &linesNumber);
                 printf("\n");
 
-                star = (unsigned char*)malloc(windowWidth * windowHeight * 3);
-                if (star == NULL) 
+                image = CreateSiemensStar(windowWidth, windowHeight, starRadius, linesNumber);
+
+                if (image == NULL) 
                 {
                     printf("Memory allocation failed for siemens star!");
                     return 1;
                 }
 
-                DrawStar(star, windowWidth, windowHeight, starRadius, linesNumber);
+                rawFile = fopen("siemens_star.raw", "wb");
 
-                FILE* rawFile = fopen("siemens_star.raw", "wb");
                 if (rawFile == NULL) 
                 {
                     printf("File could not be opened!");
-                    free(star);
+                    FreeImage(image);
                     return 1;
                 }
 
-                fwrite(star, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                fwrite(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
 
                 fclose(rawFile);
 
-                //free(star);
                 break;
             case 2:
                 printf("GRADIENT\n\n");
@@ -100,18 +100,18 @@ int main() // introducere argc, argv
                     return 1;
                 }
 
-                FILE* rawFile2 = fopen("gradient.raw", "wb");
-                if (rawFile2 == NULL)
+                rawFile = fopen("gradient.raw", "wb");
+                if (rawFile == NULL)
                 {
                     printf("File could not be opened!");
                     FreeImage(image);
                     return 1;
                 }
 
-                fwrite(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile2);
+                fwrite(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
 
                 FreeImage(image);
-                fclose(rawFile2);
+                fclose(rawFile);
 
                 break;
             case 3:

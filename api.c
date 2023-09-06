@@ -53,3 +53,25 @@ Image* CreateGradientImage(int width, int height, int columnsNumber)
 
     return gradientImage;
 }
+
+Image* CreateSiemensStar(int width, int height, int radius, int linesNumber)
+{
+    Image* siemensStar = malloc(sizeof(Image));
+
+    if (siemensStar == NULL)
+    {
+        return NULL;
+    }
+
+    AllocImage(siemensStar, width, height);
+
+    if (siemensStar->data == NULL)
+    {
+        free(siemensStar);
+        return NULL;
+    }
+
+    DrawStar(siemensStar->data, width, height, radius, linesNumber);
+
+    return siemensStar;
+}
