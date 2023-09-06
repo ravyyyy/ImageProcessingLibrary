@@ -75,3 +75,25 @@ Image* CreateSiemensStar(int width, int height, int radius, int linesNumber)
 
     return siemensStar;
 }
+
+Image* RotateImageCustomDegrees(Image* input, int width, int height, int degrees)
+{
+    Image* output = malloc(sizeof(Image));
+
+    if (output == NULL)
+    {
+        return NULL;
+    }
+
+    AllocImage(output, width, height);
+
+    if (output->data == NULL)
+    {
+        free(output);
+        return NULL;
+    }
+
+    RotateImageCustom(input->data, output->data, width, height, degrees);
+
+    return output;
+}

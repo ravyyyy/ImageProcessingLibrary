@@ -25,6 +25,8 @@ int main() // introducere argc, argv
     int columnsNumber;
     bool isMenuOpen = true;
     int userChoice;
+    int degrees;
+    int choiceCustom;
     FILE* rawFile;
     unsigned char* star;
     unsigned char* gradient;
@@ -34,16 +36,15 @@ int main() // introducere argc, argv
         printf("MENU:\n");
         printf("1. Draw a Siemens Star\n");
         printf("2. Draw a Gradient\n");
-        printf("3. Rotate an image by 90 degrees to the right\n");
-        printf("4. Rotate with custom degrees\n");
-        printf("5. Rotate with custom degrees (incomplete)\n");
-        printf("6. Rotate a specified image\n");
-        printf("7. Rotate with custom degrees using bilinear interpolation\n");
-        printf("8. Rotate downloaded image\n");
-        printf("9. Sobel filter horizontal\n");
-        printf("10. Convert RGB image to Grayscale\n");
-        printf("11. Sobel filter vertical\n");
-        printf("12. Full Sobel filter\n");
+        printf("3. Rotate with custom degrees\n");
+        printf("4. Rotate with custom degrees (incomplete)\n");
+        printf("5. Rotate a specified image\n");
+        printf("6. Rotate with custom degrees using bilinear interpolation\n");
+        printf("7. Rotate downloaded image\n");
+        printf("8. Sobel filter horizontal\n");
+        printf("9. Convert RGB image to Grayscale\n");
+        printf("10. Sobel filter vertical\n");
+        printf("11. Full Sobel filter\n");
         printf("0. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &userChoice);
@@ -115,74 +116,12 @@ int main() // introducere argc, argv
 
                 break;
             case 3:
-                printf("ROTATE BY 90 DEGREES\n\n");
-                printf("1. Siemens star\n");
-                printf("2. Gradient\n");
-                printf("Choose the image you want to rotate: ");
-                int choice;
-                scanf("%d", &choice);
-
-                printf("Enter width of image: ");
-                scanf("%d", &windowWidth);
-                printf("Enter height of image: ");
-                scanf("%d", &windowHeight);
-
-                unsigned char* rotatedImage = (unsigned char*)malloc(windowWidth * windowHeight * 3);
-                if (rotatedImage == NULL)
-                {
-                    printf("Memory allocation failed!");
-                    return 1;
-                }
-
-                if (choice == 1)
-                {
-                    RotateImage(star, rotatedImage, windowWidth, windowHeight);
-
-                    FILE* rotatedFile = fopen("rotated_image.raw", "wb");
-                    if (rotatedFile == NULL)
-                    {
-                        printf("File could not be opened!");
-                        free(star);
-                        free(rotatedImage);
-                        return 1;
-                    } 
-
-                    fwrite(rotatedImage, sizeof(unsigned char), windowWidth * windowHeight * 3, rotatedFile);
-                    fclose(rotatedFile);
-
-                    free(star);
-                    free(rotatedImage);
-                }
-                else
-                {
-                    RotateImage(gradient, rotatedImage, windowWidth, windowHeight);
-
-                    FILE* rotatedFile = fopen("rotated_image.raw", "wb");
-                    if (rotatedFile == NULL)
-                    {
-                        printf("File could not be opened!");
-                        free(gradient);
-                        free(rotatedImage);
-                        return 1;
-                    } 
-
-                    fwrite(rotatedImage, sizeof(unsigned char), windowWidth * windowHeight * 3, rotatedFile);
-                    fclose(rotatedFile);
-
-                    free(gradient);
-                    free(rotatedImage);
-                }
-
-                break;
-            case 4:
                 printf("ROTATE CUSTOM\n\n");
                 printf("Enter the degrees: ");
-                int degrees;
                 scanf("%d", &degrees);
-                printf("1. Siemens star\n");
-                printf("2. Gradient\n");
+                printf("1. Gradient\n");
+                printf("2. Siemens star\n");
                 printf("Choose the image you want to rotate: ");
-                int choiceCustom;
                 scanf("%d", &choiceCustom);
 
                 printf("Enter width of image: ");
@@ -190,54 +129,77 @@ int main() // introducere argc, argv
                 printf("Enter height of image: ");
                 scanf("%d", &windowHeight);
 
-                unsigned char* rotatedImageCustom = (unsigned char*)malloc(windowWidth * windowHeight * 3);
-                if (rotatedImageCustom == NULL)
-                {
-                    printf("Memory allocation failed!");
-                    return 1;
-                }
+                Image* output;
 
                 if (choiceCustom == 1)
                 {
-                    RotateImageCustom(star, rotatedImageCustom, windowWidth, windowHeight, degrees);
+                    rawFile = fopen("gradient.raw", "rb");
 
-                    FILE* rotatedFileCustom = fopen("rotated_image_custom.raw", "wb");
+                    if (rawFile == NULL)
+                    {
+                        printf("File could not be opened!");
+                        return 1;
+                    }
+
+                    image->data = (unsigned char*)malloc(windowWidth * windowHeight * 3);
+                    fread(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    image->height = windowHeight;
+                    image->width = windowWidth;
+
+                    output = RotateImageCustomDegrees(image, windowWidth, windowHeight, degrees);
+
+                    FILE* rotatedFileCustom = fopen("rotated_image_custom_gradient.raw", "wb");
                     if (rotatedFileCustom == NULL)
                     {
                         printf("File could not be opened!");
-                        free(star);
-                        free(rotatedImageCustom);
+                        FreeImage(image);
+                        FreeImage(output);
+                        fclose(rotatedFileCustom);
                         return 1;
                     } 
 
-                    fwrite(rotatedImageCustom, sizeof(unsigned char), windowWidth * windowHeight * 3, rotatedFileCustom);
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rotatedFileCustom);
                     fclose(rotatedFileCustom);
 
-                    free(star);
-                    free(rotatedImageCustom);
+                    //FreeImage(image);
+                    FreeImage(output);
                 }
                 else
                 {
-                    RotateImageCustom(gradient, rotatedImageCustom, windowWidth, windowHeight, degrees);
+                    rawFile = fopen("siemens_star.raw", "rb");
 
-                    FILE* rotatedFileCustom = fopen("rotated_image_custom.raw", "wb");
+                    if (rawFile == NULL)
+                    {
+                        printf("File could not be opened!");
+                        return 1;
+                    }
+
+                    image->data = (unsigned char*)malloc(windowWidth * windowHeight * 3);
+                    fread(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    image->height = windowHeight;
+                    image->width = windowWidth;
+
+                    output = RotateImageCustomDegrees(image, windowWidth, windowHeight, degrees);
+
+                    FILE* rotatedFileCustom = fopen("rotated_image_custom_siemens_star.raw", "wb");
                     if (rotatedFileCustom == NULL)
                     {
                         printf("File could not be opened!");
-                        free(gradient);
-                        free(rotatedImageCustom);
+                        FreeImage(image);
+                        FreeImage(output);
+                        fclose(rotatedFileCustom);
                         return 1;
                     } 
 
-                    fwrite(rotatedImageCustom, sizeof(unsigned char), windowWidth * windowHeight * 3, rotatedFileCustom);
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rotatedFileCustom);
                     fclose(rotatedFileCustom);
 
-                    free(gradient);
-                    free(rotatedImageCustom);
+                    //FreeImage(image);
+                    FreeImage(output);
                 }
 
                 break;
-            case 5:
+            case 4:
                 printf("ROTATE CUSTOM (incomplete)\n\n");
                 printf("Enter the degrees: ");
                 int degreesIncomplete;
@@ -300,7 +262,7 @@ int main() // introducere argc, argv
                 }
 
                 break;
-            case 6:
+            case 5:
                 printf("ROTATE CUSTOM IMAGE\n\n");
                 printf("Enter name of file: ");
                 char fileName[100];
@@ -349,7 +311,7 @@ int main() // introducere argc, argv
 
                 free(rotatedImageCustom2);
                 break;
-            case 7:
+            case 6:
                 printf("ROTATE WITH BILINEAR INTERPOLATION\n\n");
                 printf("Enter the degrees: ");
                 int degreesBilinear;
@@ -412,7 +374,7 @@ int main() // introducere argc, argv
                 }
 
                 break;
-            case 8:
+            case 7:
                 printf("ROTATE DOWNLOADED IMAGE\n\n");
 
                 int imWidth = 875;
@@ -464,7 +426,7 @@ int main() // introducere argc, argv
                 free(im2);
 
                 break;
-            case 9:
+            case 8:
                 printf("SOBEL FILTER HORIZONTAL\n\n");
 
                 int imgWidth = 875;
@@ -516,7 +478,7 @@ int main() // introducere argc, argv
                 free(img2);
 
                 break;
-            case 10:
+            case 9:
                 printf("CONVERT RGB TO GRAYSCALE\n\n");
 
                 int imageWidth = 875;
@@ -568,7 +530,7 @@ int main() // introducere argc, argv
                 free(ima2);
 
                 break;
-            case 11:
+            case 10:
                 printf("SOBEL FILTER VERTICAL\n\n");
 
                 int imagWidth = 875;
@@ -620,7 +582,7 @@ int main() // introducere argc, argv
                 free(imag2);
 
                 break;
-            case 12:
+            case 11:
                 printf("FULL SOBEL FILTER\n\n");
 
                 int imaggWidth = 875;

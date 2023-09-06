@@ -10,8 +10,8 @@ typedef struct {
 void AllocImage(Image* image, int width, int height);
 void FreeImage(Image* image);
 
-Image* CreateGradientImage(int width, int height, int columnsNumber);
-
 Image* CreateSiemensStar(int width, int height, int radius, int linesNumber);
+Image* CreateGradientImage(int width, int height, int columnsNumber);
+Image* RotateImageCustomDegrees(Image* input, int width, int height, int degrees);
 
 #endif
