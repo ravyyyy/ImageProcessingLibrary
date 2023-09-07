@@ -15,5 +15,6 @@ Image* CreateGradientImage(int width, int height, int columnsNumber);
 Image* RotateImageCustomDegrees(Image* input, int width, int height, int degrees);
 Image* RotateImageCustomDegreesIncomplete(Image* input, int width, int height, int degrees);
 Image* RotateImageCustomFile(Image* input, int width, int height, int degrees);
+Image* RotateBilinear(Image* input, int width, int height, int degrees);
 
 #endif
