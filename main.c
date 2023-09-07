@@ -7,6 +7,7 @@
 int main() // introducere argc, argv
 {
     Image* image;
+    Image* output;
 
     int windowWidth;
     int windowHeight;
@@ -24,6 +25,8 @@ int main() // introducere argc, argv
     
     unsigned char* star;
     unsigned char* gradient;
+
+    char fileName[100];
 
     while(isMenuOpen)
     {
@@ -123,8 +126,6 @@ int main() // introducere argc, argv
                 printf("Enter height of image: ");
                 scanf("%d", &windowHeight);
 
-                Image* output;
-                
                 AllocImage(image, windowWidth, windowHeight);
 
                 if (choiceCustom == 1)
@@ -238,8 +239,7 @@ int main() // introducere argc, argv
             case 5:
                 printf("ROTATE CUSTOM IMAGE\n\n");
                 printf("Enter name of file: ");
-                char fileName[100];
-                scanf("%s", fileName);
+                scanf("%s", &fileName);
     
                 printf("Enter the degrees: ");
                 scanf("%d", &degrees);
@@ -334,6 +334,7 @@ int main() // introducere argc, argv
                 {
                     printf("File can not be opened!");
                     FreeImage(output);
+                    return 1;
                 }
 
                 fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
@@ -343,59 +344,54 @@ int main() // introducere argc, argv
                 FreeImage(output);
 
                 break;
-            /*case 7:
+            case 7:
                 printf("ROTATE DOWNLOADED IMAGE\n\n");
 
-                int imWidth = 875;
-                int imHeight = 652;
+                printf("Enter name of file: ");
+                scanf("%s", &fileName);
 
-                unsigned char* im = (unsigned char*)malloc(imWidth * imHeight * 3);
-                if (im == NULL)
+                printf("Enter the degrees: ");
+                scanf("%d", &degrees);
+                
+                printf("Enter width of image: ");
+                scanf("%d", &windowWidth);
+                printf("Enter height of image: ");
+                scanf("%d", &windowHeight);
+
+                AllocImage(image, windowWidth, windowHeight);
+                if (image->data == NULL)
                 {
                     printf("Memory allocation failed!");
-                    free(im);
                     return 1;
                 }
 
-                FILE* imF = fopen("example.raw", "rb");
-                if (imF == NULL)
+                inputFile = fopen(fileName, "rb");
+                if (inputFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(im);
-                    fclose(imF);
+                    free(image->data);
                     return 1;
                 }
 
-                fread(im, sizeof(unsigned char), imWidth * imHeight * 3, imF);
-                fclose(imF);
+                output = RotateBilinear(image, windowWidth, windowHeight, degrees);
 
-                unsigned char* im2 = (unsigned char*)malloc(imWidth * imHeight * 3);
-                if (im2 == NULL)
+                rawFile = fopen("rotate_bilinear_custom.raw", "wb");
+
+                if (rawFile == NULL)
                 {
-                    printf("Memory allocation failed!");
-                    free(im2);
+                    printf("File can not be opened!");
+                    FreeImage(output);
                     return 1;
                 }
+                
+                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                fclose(rawFile);
 
-                FILE* imF2 = fopen("example2.raw", "wb");
-                if (imF2 == NULL)
-                {
-                    printf("File could not be opened!");
-                    free(im2);
-                    fclose(imF2);
-                    return 1;
-                }
-
-                RotateImageBilinear(im, im2, imWidth, imHeight, 720);
-
-                fwrite(im2, sizeof(unsigned char), imWidth * imHeight * 3, imF2);
-                fclose(imF2);
-
-                free(im);
-                free(im2);
+                free(image->data);
+                FreeImage(output);
 
                 break;
-            case 8:
+            /*case 8:
                 printf("SOBEL FILTER HORIZONTAL\n\n");
 
                 int imgWidth = 875;
