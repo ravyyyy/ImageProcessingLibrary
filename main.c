@@ -239,7 +239,7 @@ int main() // introducere argc, argv
             case 5:
                 printf("ROTATE CUSTOM IMAGE\n\n");
                 printf("Enter name of file: ");
-                scanf("%s", &fileName);
+                scanf("%s", fileName);
     
                 printf("Enter the degrees: ");
                 scanf("%d", &degrees);
@@ -348,7 +348,7 @@ int main() // introducere argc, argv
                 printf("ROTATE DOWNLOADED IMAGE\n\n");
 
                 printf("Enter name of file: ");
-                scanf("%s", &fileName);
+                scanf("%s", fileName);
 
                 printf("Enter the degrees: ");
                 scanf("%d", &degrees);
@@ -391,111 +391,100 @@ int main() // introducere argc, argv
                 FreeImage(output);
 
                 break;
-            /*case 8:
+            case 8:
                 printf("SOBEL FILTER HORIZONTAL\n\n");
 
-                int imgWidth = 875;
-                int imgHeight = 652;
+                printf("Enter name of file: ");
+                scanf("%s", fileName);
+                
+                printf("Enter width of image: ");
+                scanf("%d", &windowWidth);
+                printf("Enter height of image: ");
+                scanf("%d", &windowHeight);
 
-                unsigned char* img = (unsigned char*)malloc(imgWidth * imgHeight);
-                if (img == NULL)
+                AllocImageGrayscale(image, windowWidth, windowHeight);
+                if (image->data == NULL)
                 {
                     printf("Memory allocation failed!");
-                    free(img);
                     return 1;
                 }
 
-                FILE* imgF = fopen("grayscaleimg.raw", "rb");
-                if (imgF == NULL)
+                inputFile = fopen(fileName, "rb");
+                if (inputFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(img);
-                    fclose(imgF);
+                    free(image->data);
                     return 1;
                 }
 
-                fread(img, sizeof(unsigned char), imgWidth * imgHeight, imgF);
-                fclose(imgF);
+                fread(image->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
 
-                unsigned char* img2 = (unsigned char*)malloc(imgWidth * imgHeight);
-                if (img2 == NULL)
-                {
-                    printf("Memory allocation failed!");
-                    free(img2);
-                    return 1;
-                }
+                output = ApplySobelHorizontalImage(image, windowWidth, windowHeight);
 
-                FILE* imgF2 = fopen("sobelhorizontal.raw", "wb");
-                if (imgF2 == NULL)
+                rawFile = fopen("sobel_horizontal.raw", "wb");
+
+                if (rawFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(img2);
-                    fclose(imgF2);
+                    FreeImage(output);
                     return 1;
                 }
 
-                ApplySobelHorizontal(img, img2, imgWidth, imgHeight);
+                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                fclose(rawFile);
 
-                fwrite(img2, sizeof(unsigned char), imgWidth * imgHeight, imgF2);
-                fclose(imgF2);
-
-                free(img);
-                free(img2);
+                free(image->data);
+                FreeImage(output);
 
                 break;
             case 9:
                 printf("CONVERT RGB TO GRAYSCALE\n\n");
 
-                int imageWidth = 875;
-                int imageHeight = 652;
+                printf("Enter name of file: ");
+                scanf("%s", fileName);
+                
+                printf("Enter width of image: ");
+                scanf("%d", &windowWidth);
+                printf("Enter height of image: ");
+                scanf("%d", &windowHeight);
 
-                unsigned char* ima = (unsigned char*)malloc(imageWidth * imageHeight * 3);
-                if (ima == NULL)
+                AllocImage(image, windowWidth, windowHeight);
+                if (image->data == NULL)
                 {
                     printf("Memory allocation failed!");
-                    free(ima);
                     return 1;
                 }
 
-                FILE* imaF = fopen("example.raw", "rb");
-                if (imaF == NULL)
+                inputFile = fopen(fileName, "rb");
+                if (inputFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(ima);
-                    fclose(imaF);
+                    free(image->data);
                     return 1;
                 }
 
-                fread(ima, sizeof(unsigned char), imageWidth * imageHeight * 3, imaF);
-                fclose(imaF);
+                fread(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
+                fclose(inputFile);
 
-                unsigned char* ima2 = (unsigned char*)malloc(imageWidth * imageHeight);
-                if (ima2 == NULL)
-                {
-                    printf("Memory allocation failed!");
-                    free(ima2);
-                    return 1;
-                }
-
-                FILE* imaF2 = fopen("grayscaleimg.raw", "wb");
-                if (imaF2 == NULL)
+                rawFile = fopen("grayscaleimg.raw", "wb");
+                if (rawFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(ima2);
-                    fclose(imaF2);
+                    free(image->data);
+                    fclose(rawFile);
                     return 1;
                 }
 
-                ConvertImage(ima, ima2, imageWidth, imageHeight);
+                output = ApplyConvertImage(image, windowWidth, windowHeight);
 
-                fwrite(ima2, sizeof(unsigned char), imageWidth * imageHeight, imaF2);
-                fclose(imaF2);
+                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                fclose(rawFile);
 
-                free(ima);
-                free(ima2);
+                free(image->data);
+                FreeImage(output);
 
                 break;
-            case 10:
+            /*case 10:
                 printf("SOBEL FILTER VERTICAL\n\n");
 
                 int imagWidth = 875;

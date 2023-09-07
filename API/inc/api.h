@@ -8,6 +8,7 @@ typedef struct {
 } Image;
 
 void AllocImage(Image* image, int width, int height);
+void AllocImageGrayscale(Image* image, int width, int height);
 void FreeImage(Image* image);
 
 Image* CreateSiemensStar(int width, int height, int radius, int linesNumber);
@@ -16,5 +17,7 @@ Image* RotateImageCustomDegrees(Image* input, int width, int height, int degrees
 Image* RotateImageCustomDegreesIncomplete(Image* input, int width, int height, int degrees);
 Image* RotateImageCustomFile(Image* input, int width, int height, int degrees);
 Image* RotateBilinear(Image* input, int width, int height, int degrees);
+Image* ApplySobelHorizontalImage(Image* input, int width, int height);
+Image* ApplyConvertImage(Image* input, int width, int height);
 
 #endif

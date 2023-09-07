@@ -19,6 +19,13 @@ void AllocImage(Image* image, int width, int height)
     image->data = malloc(width * height * 3);
 }
 
+void AllocImageGrayscale(Image* image, int width, int height)
+{
+    image->width = width;
+    image->height = height;
+    image->data = malloc(width * height);
+}
+
 void FreeImage(Image* image)
 {
     if (image != NULL)
@@ -160,6 +167,50 @@ Image* RotateBilinear(Image* input, int width, int height, int degrees)
     }
 
     RotateImageBilinear(input->data, output->data, width, height, degrees);
+
+    return output;
+}
+
+Image* ApplySobelHorizontalImage(Image* input, int width, int height)
+{
+    Image* output = malloc(sizeof(Image));
+
+    if (output == NULL)
+    {
+        return NULL;
+    }
+
+    AllocImageGrayscale(output, width, height);
+
+    if (output->data == NULL)
+    {
+        free(output);
+        return NULL;
+    }
+
+    ApplySobelHorizontal(input->data, output->data, width, height);
+
+    return output;
+}
+
+Image* ApplyConvertImage(Image* input, int width, int height)
+{
+    Image* output = malloc(sizeof(Image));
+
+    if (output == NULL)
+    {
+        return NULL;
+    }
+
+    AllocImageGrayscale(output, width, height);
+
+    if (output->data == NULL)
+    {
+        free(output);
+        return NULL;
+    }
+
+    ConvertImage(input->data, output->data, width, height);
 
     return output;
 }
