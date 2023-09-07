@@ -243,56 +243,51 @@ int main() // introducere argc, argv
                 FreeImage(output);
 
                 break;
-            /*case 5:
+            case 5:
                 printf("ROTATE CUSTOM IMAGE\n\n");
                 printf("Enter name of file: ");
                 char fileName[100];
                 scanf("%s", fileName);
     
                 printf("Enter the degrees: ");
-                int degreesCustom2;
-                scanf("%d", &degreesCustom2);
+                scanf("%d", &degrees);
 
                 printf("Enter width of image: ");
                 scanf("%d", &windowWidth);
                 printf("Enter height of image: ");
                 scanf("%d", &windowHeight);
 
-                unsigned char* rotatedImageCustom2 = (unsigned char*)malloc(windowWidth * windowHeight * 3);
-                if (rotatedImageCustom2 == NULL)
-                {
-                    printf("Memory allocation failed!");
-                    return 1;
-                }
-
-                FILE* imageFile = fopen(fileName, "rb");
-                if (imageFile == NULL)
+                rotatedFileCustom = fopen(fileName, "rb");
+                if (rotatedFileCustom == NULL)
                 {
                     printf("Image file could not be opened!");
-                    free(rotatedImageCustom2);
                     return 1;
                 }
-    
-                fread(rotatedImageCustom2, sizeof(unsigned char), windowWidth * windowHeight * 3, imageFile);
 
-                fclose(imageFile);
+                image->data = (unsigned char*)malloc(windowWidth * windowHeight * 3);
+                fread(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rotatedFileCustom);
+                image->width = windowWidth;
+                image->height = windowHeight;
 
-                RotateImageCustom(rotatedImageCustom2, rotatedImageCustom2, windowWidth, windowHeight, degreesCustom2);
+                fclose(rotatedFileCustom);
 
-                FILE* rotatedFileCustom2 = fopen("rotated_image_custom2.raw", "wb");
-                if (rotatedFileCustom2 == NULL)
+                output = RotateImageCustomFile(image, windowWidth, windowHeight, degrees);
+
+                FILE* rawFile = fopen("rotated_image_custom2.raw", "wb");
+                if (rawFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(rotatedImageCustom2);
+                    FreeImage(image);
+                    FreeImage(output);
                     return 1;
                 } 
 
-                fwrite(rotatedImageCustom2, sizeof(unsigned char), windowWidth * windowHeight * 3, rotatedFileCustom2);
-                fclose(rotatedFileCustom2);
+                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                fclose(rawFile);
 
-                free(rotatedImageCustom2);
+                FreeImage(output);
                 break;
-            case 6:
+            /*case 6:
                 printf("ROTATE WITH BILINEAR INTERPOLATION\n\n");
                 printf("Enter the degrees: ");
                 int degreesBilinear;
