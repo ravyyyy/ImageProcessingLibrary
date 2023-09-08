@@ -19,5 +19,7 @@ Image* RotateImageCustomFile(Image* input, int width, int height, int degrees);
 Image* RotateBilinear(Image* input, int width, int height, int degrees);
 Image* ApplySobelHorizontalImage(Image* input, int width, int height);
 Image* ApplyConvertImage(Image* input, int width, int height);
+Image* ApplySobelVerticalImage(Image* input, int width, int height);
+Image* ApplySobelImage(Image* input, int width, int height);
 
 #endif

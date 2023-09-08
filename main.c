@@ -484,110 +484,100 @@ int main() // introducere argc, argv
                 FreeImage(output);
 
                 break;
-            /*case 10:
+            case 10:
                 printf("SOBEL FILTER VERTICAL\n\n");
 
-                int imagWidth = 875;
-                int imagHeight = 652;
+                printf("Enter name of file: ");
+                scanf("%s", fileName);
+                
+                printf("Enter width of image: ");
+                scanf("%d", &windowWidth);
+                printf("Enter height of image: ");
+                scanf("%d", &windowHeight);
 
-                unsigned char* imag = (unsigned char*)malloc(imagWidth * imagHeight);
-                if (imag == NULL)
+                AllocImageGrayscale(image, windowWidth, windowHeight);
+                if (image->data == NULL)
                 {
                     printf("Memory allocation failed!");
-                    free(imag);
                     return 1;
                 }
 
-                FILE* imagF = fopen("grayscaleimg.raw", "rb");
-                if (imagF == NULL)
+                inputFile = fopen(fileName, "rb");
+                if (inputFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(imag);
-                    fclose(imagF);
+                    free(image->data);
                     return 1;
                 }
 
-                fread(imag, sizeof(unsigned char), imagWidth * imagHeight, imagF);
-                fclose(imagF);
+                fread(image->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
+                fclose(inputFile);
 
-                unsigned char* imag2 = (unsigned char*)malloc(imagWidth * imagHeight);
-                if (imag2 == NULL)
-                {
-                    printf("Memory allocation failed!");
-                    free(imag2);
-                    return 1;
-                }
+                output = ApplySobelVerticalImage(image, windowWidth, windowHeight);
 
-                FILE* imagF2 = fopen("sobelvertical.raw", "wb");
-                if (imagF2 == NULL)
+                rawFile = fopen("sobel_vertical.raw", "wb");
+
+                if (rawFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(imag2);
-                    fclose(imagF2);
+                    FreeImage(output);
                     return 1;
                 }
 
-                ApplySobelVertical(imag, imag2, imagWidth, imagHeight);
+                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                fclose(rawFile);
 
-                fwrite(imag2, sizeof(unsigned char), imagWidth * imagHeight, imagF2);
-                fclose(imagF2);
-
-                free(imag);
-                free(imag2);
+                free(image->data);
+                FreeImage(output);
 
                 break;
             case 11:
                 printf("FULL SOBEL FILTER\n\n");
 
-                int imaggWidth = 875;
-                int imaggHeight = 652;
+                printf("Enter name of file: ");
+                scanf("%s", fileName);
+                
+                printf("Enter width of image: ");
+                scanf("%d", &windowWidth);
+                printf("Enter height of image: ");
+                scanf("%d", &windowHeight);
 
-                unsigned char* imagg = (unsigned char*)malloc(imaggWidth * imaggHeight);
-                if (imagg == NULL)
+                AllocImage(image, windowWidth, windowHeight);
+                if (image->data == NULL)
                 {
                     printf("Memory allocation failed!");
-                    free(imagg);
                     return 1;
                 }
 
-                FILE* imaggF = fopen("grayscaleimg.raw", "rb");
-                if (imaggF == NULL)
+                inputFile = fopen(fileName, "rb");
+                if (inputFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(imagg);
-                    fclose(imaggF);
+                    free(image->data);
                     return 1;
                 }
 
-                fread(imagg, sizeof(unsigned char), imaggWidth * imaggHeight, imaggF);
-                fclose(imaggF);
+                fread(image->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
+                fclose(inputFile);
 
-                unsigned char* imagg2 = (unsigned char*)malloc(imaggWidth * imaggHeight);
-                if (imagg2 == NULL)
-                {
-                    printf("Memory allocation failed!");
-                    free(imagg2);
-                    return 1;
-                }
+                output = ApplySobelImage(image, windowWidth, windowHeight);
 
-                FILE* imaggF2 = fopen("sobel.raw", "wb");
-                if (imaggF2 == NULL)
+                rawFile = fopen("sobel.raw", "wb");
+
+                if (rawFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(imagg2);
-                    fclose(imaggF2);
+                    FreeImage(output);
                     return 1;
                 }
 
-                ApplySobel(imagg, imagg2, imaggWidth, imaggHeight);
+                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                fclose(rawFile);
 
-                fwrite(imagg2, sizeof(unsigned char), imaggWidth * imaggHeight, imaggF2);
-                fclose(imaggF2);
+                free(image->data);
+                FreeImage(output);
 
-                free(imagg);
-                free(imagg2);
-
-                break;*/
+                break;
             case 0:
                 isMenuOpen = false;
                 printf("Goodbye!");

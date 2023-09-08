@@ -214,3 +214,47 @@ Image* ApplyConvertImage(Image* input, int width, int height)
 
     return output;
 }
+
+Image* ApplySobelVerticalImage(Image* input, int width, int height)
+{
+    Image* output = malloc(sizeof(Image));
+
+    if (output == NULL)
+    {
+        return NULL;
+    }
+
+    AllocImageGrayscale(output, width, height);
+
+    if (output->data == NULL)
+    {
+        free(output);
+        return NULL;
+    }
+
+    ApplySobelVertical(input->data, output->data, width, height);
+
+    return output;
+}
+
+Image* ApplySobelImage(Image* image, int width, int height)
+{
+    Image* output = malloc(sizeof(Image));
+
+    if (output == NULL)
+    {
+        return NULL;
+    }
+
+    AllocImageGrayscale(output, width, height);
+
+    if (output->data == NULL)
+    {
+        free(output);
+        return NULL;
+    }
+
+    ApplySobel(image->data, output->data, width, height);
+
+    return output;
+}
