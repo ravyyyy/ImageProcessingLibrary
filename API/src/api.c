@@ -11,6 +11,7 @@
 #include "rgbtograyscale.h"
 #include "sobelvertical.h"
 #include "sobel.h"
+#include "medianfilter.h"
 
 void AllocImage(Image* image, int width, int height)
 {
@@ -237,7 +238,7 @@ Image* ApplySobelVerticalImage(Image* input, int width, int height)
     return output;
 }
 
-Image* ApplySobelImage(Image* image, int width, int height)
+Image* ApplySobelImage(Image* input, int width, int height)
 {
     Image* output = malloc(sizeof(Image));
 
@@ -254,7 +255,29 @@ Image* ApplySobelImage(Image* image, int width, int height)
         return NULL;
     }
 
-    ApplySobel(image->data, output->data, width, height);
+    ApplySobel(input->data, output->data, width, height);
+
+    return output;
+}
+
+Image* Median(Image* input, int width, int height)
+{
+    Image* output = malloc(sizeof(Image));
+
+    if (output == NULL)
+    {
+        return NULL;
+    }
+
+    AllocImageGrayscale(output, width, height);
+
+    if (output->data == NULL)
+    {
+        free(output);
+        return NULL;
+    }
+
+    MedianFilter(input->data, output->data, width, height);
 
     return output;
 }

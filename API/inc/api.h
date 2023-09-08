@@ -21,5 +21,6 @@ Image* ApplySobelHorizontalImage(Image* input, int width, int height);
 Image* ApplyConvertImage(Image* input, int width, int height);
 Image* ApplySobelVerticalImage(Image* input, int width, int height);
 Image* ApplySobelImage(Image* input, int width, int height);
+Image* Median(Image* input, int width, int height);
 
 #endif

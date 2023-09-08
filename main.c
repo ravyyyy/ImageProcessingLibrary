@@ -4,7 +4,7 @@
 
 #include "API/inc/api.h"
 
-int main() // introducere argc, argv
+int main()
 {
     Image* image;
     Image* output;
@@ -42,6 +42,7 @@ int main() // introducere argc, argv
         printf("9. Convert RGB image to Grayscale\n");
         printf("10. Sobel filter vertical\n");
         printf("11. Full Sobel filter\n");
+        printf("12. Median filter\n");
         printf("0. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &userChoice);
@@ -542,7 +543,7 @@ int main() // introducere argc, argv
                 printf("Enter height of image: ");
                 scanf("%d", &windowHeight);
 
-                AllocImage(image, windowWidth, windowHeight);
+                AllocImageGrayscale(image, windowWidth, windowHeight);
                 if (image->data == NULL)
                 {
                     printf("Memory allocation failed!");
@@ -563,6 +564,53 @@ int main() // introducere argc, argv
                 output = ApplySobelImage(image, windowWidth, windowHeight);
 
                 rawFile = fopen("sobel.raw", "wb");
+
+                if (rawFile == NULL)
+                {
+                    printf("File could not be opened!");
+                    FreeImage(output);
+                    return 1;
+                }
+
+                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                fclose(rawFile);
+
+                free(image->data);
+                FreeImage(output);
+
+                break;
+            case 12:
+                printf("MEDIAN FILTER\n\n");
+
+                printf("Enter name of file: ");
+                scanf("%s", fileName);
+                
+                printf("Enter width of image: ");
+                scanf("%d", &windowWidth);
+                printf("Enter height of image: ");
+                scanf("%d", &windowHeight);
+
+                AllocImageGrayscale(image, windowWidth, windowHeight);
+                if (image->data == NULL)
+                {
+                    printf("Memory allocation failed!");
+                    return 1;
+                }
+
+                inputFile = fopen(fileName, "rb");
+                if (inputFile == NULL)
+                {
+                    printf("File could not be opened!");
+                    free(image->data);
+                    return 1;
+                }
+
+                fread(image->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
+                fclose(inputFile);
+
+                output = Median(image, windowWidth, windowHeight);
+
+                rawFile = fopen("median_filter.raw", "wb");
 
                 if (rawFile == NULL)
                 {

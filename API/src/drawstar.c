@@ -17,8 +17,6 @@ void DrawStar(unsigned char* star, int windowWidth, int windowHeight, int starRa
                 double angle = atan2(dy, dx); // Direction from the center to the current pixel.
                 angle += M_PI; // Adjustment to ensure that the angle falls within the range of 0 to 2pi (0 to 360 degrees).
                 int sectorIndex = (int)(angle / (2 * M_PI / linesNumber)) % linesNumber; // The normalized angle is divided into equally spaced sectors.
-                // filtru median
-                // transformari, affine, perspective
 
                 star[pixelIndex] = (sectorIndex % 2) ? 0 : 255;
                 star[pixelIndex + 1] = (sectorIndex % 2) ? 0 : 255;

@@ -21,6 +21,8 @@ add_library(api_library STATIC
     src/sobelvertical.c
     src/sobelvertical.h
     src/rotateincomplete.c
-    src/rotateincomplete.h)
+    src/rotateincomplete.h
+    src/medianfilter.c
+    src/medianfilter.h)
 
 export(TARGETS api_library FILE api_library.cmake)
