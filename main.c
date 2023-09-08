@@ -6,8 +6,8 @@
 
 int main()
 {
-    Image* image;
-    Image* output;
+    Image* input = NULL;
+    Image* output = NULL;
 
     int windowWidth;
     int windowHeight;
@@ -17,16 +17,17 @@ int main()
     int userChoice;
     int degrees;
     int choiceCustom;
+    int inputTypeChoice;
 
     bool isMenuOpen = true;
     
     FILE* rawFile;
     FILE* inputFile;
-    
-    unsigned char* star;
-    unsigned char* gradient;
 
     char fileName[100];
+    
+    ImageType type;
+    AllocationStatus status;
 
     while(isMenuOpen)
     {
@@ -35,11 +36,11 @@ int main()
         printf("2. Draw a Gradient\n");
         printf("3. Rotate with custom degrees\n");
         printf("4. Rotate with custom degrees (incomplete)\n");
-        printf("5. Rotate a specified image\n");
+        printf("5. Rotate a specified input\n");
         printf("6. Rotate with custom degrees using bilinear interpolation\n");
-        printf("7. Rotate downloaded image\n");
+        printf("7. Rotate downloaded input\n");
         printf("8. Sobel filter horizontal\n");
-        printf("9. Convert RGB image to Grayscale\n");
+        printf("9. Convert RGB input to Grayscale\n");
         printf("10. Sobel filter vertical\n");
         printf("11. Full Sobel filter\n");
         printf("12. Median filter\n");
@@ -48,7 +49,7 @@ int main()
         scanf("%d", &userChoice);
         switch(userChoice)
         {
-            case 1:
+            /*case 1:
                 printf("SIEMENS STAR\n\n");
                 printf("Enter the width: ");
                 scanf("%d", &windowWidth);
@@ -60,9 +61,9 @@ int main()
                 scanf("%d", &linesNumber);
                 printf("\n");
 
-                image = CreateSiemensStar(windowWidth, windowHeight, starRadius, linesNumber);
+                input = CreateSiemensStar(windowWidth, windowHeight, starRadius, linesNumber);
 
-                if (image == NULL) 
+                if (input == NULL) 
                 {
                     printf("Memory allocation failed for siemens star!");
                     return 1;
@@ -73,11 +74,11 @@ int main()
                 if (rawFile == NULL) 
                 {
                     printf("File could not be opened!");
-                    FreeImage(image);
+                    FreeImage(input);
                     return 1;
                 }
 
-                fwrite(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                fwrite(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
 
                 fclose(rawFile);
 
@@ -91,9 +92,9 @@ int main()
                 printf("Enter the number of columns: ");
                 scanf("%d", &columnsNumber);
 
-                image = CreateGradientImage(windowWidth, windowHeight, columnsNumber);
+                input = CreateGradientinput(windowWidth, windowHeight, columnsNumber);
 
-                if (image == NULL) 
+                if (input == NULL) 
                 {
                     printf("Memory allocation failed!");
                     return 1;
@@ -103,13 +104,13 @@ int main()
                 if (rawFile == NULL)
                 {
                     printf("File could not be opened!");
-                    FreeImage(image);
+                    FreeImage(input);
                     return 1;
                 }
 
-                fwrite(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                fwrite(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
 
-                FreeImage(image);
+                FreeImage(input);
                 fclose(rawFile);
 
                 break;
@@ -119,15 +120,15 @@ int main()
                 scanf("%d", &degrees);
                 printf("1. Gradient\n");
                 printf("2. Siemens star\n");
-                printf("Choose the image you want to rotate: ");
+                printf("Choose the input you want to rotate: ");
                 scanf("%d", &choiceCustom);
 
-                printf("Enter width of image: ");
+                printf("Enter width of input: ");
                 scanf("%d", &windowWidth);
-                printf("Enter height of image: ");
+                printf("Enter height of input: ");
                 scanf("%d", &windowHeight);
 
-                AllocImage(image, windowWidth, windowHeight);
+                //AllocImage(input, windowWidth, windowHeight);
 
                 if (choiceCustom == 1)
                 {
@@ -139,9 +140,9 @@ int main()
                         return 1;
                     }
 
-                    fread(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
 
-                    output = RotateImageCustomDegrees(image, windowWidth, windowHeight, degrees);
+                    output = RotateinputCustomDegrees(input, windowWidth, windowHeight, degrees);
                 }
                 else
                 {
@@ -153,16 +154,16 @@ int main()
                         return 1;
                     }
 
-                    fread(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
 
-                    output = RotateImageCustomDegrees(image, windowWidth, windowHeight, degrees);
+                    output = RotateinputCustomDegrees(input, windowWidth, windowHeight, degrees);
                 }
 
-                inputFile = fopen("rotated_image_custom.raw", "wb");
+                inputFile = fopen("rotated_input_custom.raw", "wb");
                 if (inputFile == NULL)
                 {
                     printf("File could not be opened!");
-                    FreeImage(image);
+                    FreeImage(input);
                     FreeImage(output);
                     fclose(inputFile);
                     return 1;
@@ -171,7 +172,7 @@ int main()
                 fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
                 fclose(inputFile);
 
-                free(image->data);
+                free(input->data);
                 FreeImage(output);
 
                 break;
@@ -181,15 +182,15 @@ int main()
                 scanf("%d", &degrees);
                 printf("1. Gradient\n");
                 printf("2. Siemens star\n");
-                printf("Choose the image you want to rotate: ");
+                printf("Choose the input you want to rotate: ");
                 scanf("%d", &choiceCustom);
 
-                printf("Enter width of image: ");
+                printf("Enter width of input: ");
                 scanf("%d", &windowWidth);
-                printf("Enter height of image: ");
+                printf("Enter height of input: ");
                 scanf("%d", &windowHeight);
 
-                AllocImage(image, windowWidth, windowHeight);
+                //AllocImage(input, windowWidth, windowHeight);
 
                 if (choiceCustom == 1)
                 {
@@ -201,9 +202,9 @@ int main()
                         return 1;
                     }
 
-                    fread(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
 
-                    output = RotateImageCustomDegreesIncomplete(image, windowWidth, windowHeight, degrees);                    
+                    output = RotateinputCustomDegreesIncomplete(input, windowWidth, windowHeight, degrees);                    
                 }
                 else
                 {
@@ -215,16 +216,16 @@ int main()
                         return 1;
                     }
 
-                    fread(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
 
-                    output = RotateImageCustomDegreesIncomplete(image, windowWidth, windowHeight, degrees);
+                    output = RotateinputCustomDegreesIncomplete(input, windowWidth, windowHeight, degrees);
                 }
 
-                inputFile = fopen("rotated_image_custom_incomplete.raw", "wb");
+                inputFile = fopen("rotated_input_custom_incomplete.raw", "wb");
                 if (inputFile == NULL)
                 {
                     printf("File could not be opened!");
-                    FreeImage(image);
+                    FreeImage(input);
                     FreeImage(output);
                     fclose(inputFile);
                     return 1;
@@ -233,43 +234,43 @@ int main()
                 fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
                 fclose(inputFile);
 
-                free(image->data);
+                free(input->data);
                 FreeImage(output);
 
                 break;
             case 5:
-                printf("ROTATE CUSTOM IMAGE\n\n");
+                printf("ROTATE CUSTOM input\n\n");
                 printf("Enter name of file: ");
                 scanf("%s", fileName);
     
                 printf("Enter the degrees: ");
                 scanf("%d", &degrees);
 
-                printf("Enter width of image: ");
+                printf("Enter width of input: ");
                 scanf("%d", &windowWidth);
-                printf("Enter height of image: ");
+                printf("Enter height of input: ");
                 scanf("%d", &windowHeight);
 
                 inputFile = fopen(fileName, "rb");
                 if (inputFile == NULL)
                 {
-                    printf("Image file could not be opened!");
+                    printf("input file could not be opened!");
                     return 1;
                 }
 
-                AllocImage(image, windowWidth ,windowHeight);
-                fread(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
+                //AllocImage(input, windowWidth ,windowHeight);
+                fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
 
                 fclose(inputFile);
 
-                output = RotateImageCustomFile(image, windowWidth, windowHeight, degrees);
+                output = RotateinputCustomFile(input, windowWidth, windowHeight, degrees);
 
-                FILE* rawFile = fopen("rotated_image_custom2.raw", "wb");
+                FILE* rawFile = fopen("rotated_input_custom2.raw", "wb");
 
                 if (rawFile == NULL)
                 {
                     printf("File could not be opened!");
-                    FreeImage(image);
+                    FreeImage(input);
                     FreeImage(output);
                     return 1;
                 } 
@@ -277,7 +278,7 @@ int main()
                 fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
                 fclose(rawFile);
 
-                free(image->data);
+                free(input->data);
                 FreeImage(output);
 
                 break;
@@ -287,16 +288,16 @@ int main()
                 scanf("%d", &degrees);
                 printf("1. Gradient\n");
                 printf("2. Siemens Star\n");
-                printf("Choose the image you want to rotate: ");
+                printf("Choose the input you want to rotate: ");
                 scanf("%d", &choiceCustom);
 
-                printf("Enter width of image: ");
+                printf("Enter width of input: ");
                 scanf("%d", &windowWidth);
-                printf("Enter height of image: ");
+                printf("Enter height of input: ");
                 scanf("%d", &windowHeight);
 
-                AllocImage(image, windowWidth, windowHeight);
-                if (image->data == NULL)
+                //AllocImage(input, windowWidth, windowHeight);
+                if (input->data == NULL)
                 {
                     printf("Memory allocation failed!");
                     return 1;
@@ -312,7 +313,7 @@ int main()
                         return 1;
                     }
 
-                    fread(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
                 }
                 else
                 {
@@ -324,10 +325,10 @@ int main()
                         return 1;
                     }
                     
-                    fread(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
                 }
 
-                output = RotateBilinear(image, windowWidth, windowHeight, degrees);
+                output = RotateBilinear(input, windowWidth, windowHeight, degrees);
 
                 rawFile = fopen("rotate_bilinear.raw", "wb");
 
@@ -341,12 +342,12 @@ int main()
                 fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
                 fclose(rawFile);
 
-                free(image->data);
+                free(input->data);
                 FreeImage(output);
 
                 break;
             case 7:
-                printf("ROTATE DOWNLOADED IMAGE\n\n");
+                printf("ROTATE DOWNLOADED input\n\n");
 
                 printf("Enter name of file: ");
                 scanf("%s", fileName);
@@ -354,13 +355,13 @@ int main()
                 printf("Enter the degrees: ");
                 scanf("%d", &degrees);
                 
-                printf("Enter width of image: ");
+                printf("Enter width of input: ");
                 scanf("%d", &windowWidth);
-                printf("Enter height of image: ");
+                printf("Enter height of input: ");
                 scanf("%d", &windowHeight);
 
-                AllocImage(image, windowWidth, windowHeight);
-                if (image->data == NULL)
+                //AllocImage(input, windowWidth, windowHeight);
+                if (input->data == NULL)
                 {
                     printf("Memory allocation failed!");
                     return 1;
@@ -370,11 +371,11 @@ int main()
                 if (inputFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(image->data);
+                    free(input->data);
                     return 1;
                 }
 
-                output = RotateBilinear(image, windowWidth, windowHeight, degrees);
+                output = RotateBilinear(input, windowWidth, windowHeight, degrees);
 
                 rawFile = fopen("rotate_bilinear_custom.raw", "wb");
 
@@ -388,7 +389,7 @@ int main()
                 fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
                 fclose(rawFile);
 
-                free(image->data);
+                free(input->data);
                 FreeImage(output);
 
                 break;
@@ -398,13 +399,13 @@ int main()
                 printf("Enter name of file: ");
                 scanf("%s", fileName);
                 
-                printf("Enter width of image: ");
+                printf("Enter width of input: ");
                 scanf("%d", &windowWidth);
-                printf("Enter height of image: ");
+                printf("Enter height of input: ");
                 scanf("%d", &windowHeight);
 
-                AllocImageGrayscale(image, windowWidth, windowHeight);
-                if (image->data == NULL)
+                AllocImageGrayscale(input, windowWidth, windowHeight);
+                if (input->data == NULL)
                 {
                     printf("Memory allocation failed!");
                     return 1;
@@ -414,13 +415,13 @@ int main()
                 if (inputFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(image->data);
+                    free(input->data);
                     return 1;
                 }
 
-                fread(image->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
+                fread(input->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
 
-                output = ApplySobelHorizontalImage(image, windowWidth, windowHeight);
+                output = ApplySobelHorizontalinput(input, windowWidth, windowHeight);
 
                 rawFile = fopen("sobel_horizontal.raw", "wb");
 
@@ -434,7 +435,7 @@ int main()
                 fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
                 fclose(rawFile);
 
-                free(image->data);
+                free(input->data);
                 FreeImage(output);
 
                 break;
@@ -444,13 +445,13 @@ int main()
                 printf("Enter name of file: ");
                 scanf("%s", fileName);
                 
-                printf("Enter width of image: ");
+                printf("Enter width of input: ");
                 scanf("%d", &windowWidth);
-                printf("Enter height of image: ");
+                printf("Enter height of input: ");
                 scanf("%d", &windowHeight);
 
-                AllocImage(image, windowWidth, windowHeight);
-                if (image->data == NULL)
+                //AllocImage(input, windowWidth, windowHeight);
+                if (input->data == NULL)
                 {
                     printf("Memory allocation failed!");
                     return 1;
@@ -460,28 +461,28 @@ int main()
                 if (inputFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(image->data);
+                    free(input->data);
                     return 1;
                 }
 
-                fread(image->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
+                fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
                 fclose(inputFile);
 
                 rawFile = fopen("grayscaleimg.raw", "wb");
                 if (rawFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(image->data);
+                    free(input->data);
                     fclose(rawFile);
                     return 1;
                 }
 
-                output = ApplyConvertImage(image, windowWidth, windowHeight);
+                output = ApplyConvertinput(input, windowWidth, windowHeight);
 
                 fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
                 fclose(rawFile);
 
-                free(image->data);
+                free(input->data);
                 FreeImage(output);
 
                 break;
@@ -491,13 +492,13 @@ int main()
                 printf("Enter name of file: ");
                 scanf("%s", fileName);
                 
-                printf("Enter width of image: ");
+                printf("Enter width of input: ");
                 scanf("%d", &windowWidth);
-                printf("Enter height of image: ");
+                printf("Enter height of input: ");
                 scanf("%d", &windowHeight);
 
-                AllocImageGrayscale(image, windowWidth, windowHeight);
-                if (image->data == NULL)
+                AllocImageGrayscale(input, windowWidth, windowHeight);
+                if (input->data == NULL)
                 {
                     printf("Memory allocation failed!");
                     return 1;
@@ -507,14 +508,14 @@ int main()
                 if (inputFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(image->data);
+                    free(input->data);
                     return 1;
                 }
 
-                fread(image->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
+                fread(input->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
                 fclose(inputFile);
 
-                output = ApplySobelVerticalImage(image, windowWidth, windowHeight);
+                output = ApplySobelVerticalinput(input, windowWidth, windowHeight);
 
                 rawFile = fopen("sobel_vertical.raw", "wb");
 
@@ -528,25 +529,35 @@ int main()
                 fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
                 fclose(rawFile);
 
-                free(image->data);
+                free(input->data);
                 FreeImage(output);
 
-                break;
+                break;*/
             case 11:
                 printf("FULL SOBEL FILTER\n\n");
 
                 printf("Enter name of file: ");
                 scanf("%s", fileName);
                 
-                printf("Enter width of image: ");
+                printf("Enter width of input: ");
                 scanf("%d", &windowWidth);
-                printf("Enter height of image: ");
+                printf("Enter height of input: ");
                 scanf("%d", &windowHeight);
-
-                AllocImageGrayscale(image, windowWidth, windowHeight);
-                if (image->data == NULL)
+                
+                printf("Enter type of input (0 for RGB, 1 for Grayscale): ");
+                scanf("%d", &inputTypeChoice);
+                
+                if (inputTypeChoice == 0) 
                 {
-                    printf("Memory allocation failed!");
+                    type = RGB;
+                }
+                else if (inputTypeChoice == 1) 
+                {
+                    type = Grayscale;
+                } 
+                else
+                {
+                    printf("Invalid input type choice!");
                     return 1;
                 }
 
@@ -554,44 +565,66 @@ int main()
                 if (inputFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(image->data);
+                    free(input->data);
                     return 1;
                 }
+                
+                status = AllocImage(&input, windowWidth, windowHeight, type);
 
-                fread(image->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
+                if (type == RGB)
+                {
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
+                }
+                else
+                {
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
+                }
                 fclose(inputFile);
 
-                output = ApplySobelImage(image, windowWidth, windowHeight);
+                AllocImage(&output, windowWidth, windowHeight, type);
+                ApplySobelImage(input, output);
 
                 rawFile = fopen("sobel.raw", "wb");
 
                 if (rawFile == NULL)
                 {
                     printf("File could not be opened!");
+                    FreeImage(input);
                     FreeImage(output);
                     return 1;
                 }
 
-                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                if (type == RGB)
+                {
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                }
+                else
+                {
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                }
+                
                 fclose(rawFile);
 
-                free(image->data);
+                FreeImage(input);
                 FreeImage(output);
 
                 break;
-            case 12:
+            /*case 12:
                 printf("MEDIAN FILTER\n\n");
 
                 printf("Enter name of file: ");
                 scanf("%s", fileName);
                 
-                printf("Enter width of image: ");
+                printf("Enter width of input: ");
                 scanf("%d", &windowWidth);
-                printf("Enter height of image: ");
+                printf("Enter height of input: ");
                 scanf("%d", &windowHeight);
 
-                AllocImageGrayscale(image, windowWidth, windowHeight);
-                if (image->data == NULL)
+                printf("Enter type of input: ");
+                scanf("%d", &type);
+
+                AllocImage(input, windowWidth, windowHeight, type);
+                if (input->data == NULL)
                 {
                     printf("Memory allocation failed!");
                     return 1;
@@ -601,14 +634,14 @@ int main()
                 if (inputFile == NULL)
                 {
                     printf("File could not be opened!");
-                    free(image->data);
+                    free(input->data);
                     return 1;
                 }
 
-                fread(image->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
+                fread(input->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
                 fclose(inputFile);
 
-                output = Median(image, windowWidth, windowHeight);
+                //output = Median(input, windowWidth, windowHeight);
 
                 rawFile = fopen("median_filter.raw", "wb");
 
@@ -622,10 +655,10 @@ int main()
                 fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
                 fclose(rawFile);
 
-                free(image->data);
+                free(input->data);
                 FreeImage(output);
 
-                break;
+                break;*/
             case 0:
                 isMenuOpen = false;
                 printf("Goodbye!");

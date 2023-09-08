@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdint.h>
 
 #include "api.h"
 #include "drawstar.h"
@@ -13,11 +14,44 @@
 #include "sobel.h"
 #include "medianfilter.h"
 
-void AllocImage(Image* image, int width, int height)
+int32_t AllocImage(Image** image, int width, int height, ImageType type)
 {
-    image->width = width;
-    image->height = height;
-    image->data = malloc(width * height * 3);
+    if (width < 1 || height < 1 || width > 3840 || height > 2160)
+    {
+        return INVALID_PARAMETERS;
+    }
+
+    *image = malloc(sizeof(Image));
+    if (*image == NULL)
+    {
+        return ERROR;
+    }
+
+    (*image)->width = width;
+    (*image)->height = height;
+
+    
+
+    if (type == RGB)
+    {
+        (*image)->data = malloc(width * height * 3);
+    }
+    else if (type == Grayscale)
+    {
+        (*image)->data = malloc(width * height);
+    }
+    else
+    {
+        return INVALID_TYPE;
+    }
+    
+    if ((*image)->data == NULL)
+    {
+        free(image);
+        return ERROR;
+    }
+
+    return SUCCESS;
 }
 
 void AllocImageGrayscale(Image* image, int width, int height)
@@ -49,7 +83,7 @@ Image* CreateGradientImage(int width, int height, int columnsNumber)
         return NULL;
     }
 
-    AllocImage(gradientImage, width, height);
+    //AllocImage(gradientImage, width, height);
 
     if (gradientImage->data == NULL)
     {
@@ -71,7 +105,7 @@ Image* CreateSiemensStar(int width, int height, int radius, int linesNumber)
         return NULL;
     }
 
-    AllocImage(siemensStar, width, height);
+    //AllocImage(siemensStar, width, height);
 
     if (siemensStar->data == NULL)
     {
@@ -93,7 +127,7 @@ Image* RotateImageCustomDegrees(Image* input, int width, int height, int degrees
         return NULL;
     }
 
-    AllocImage(output, width, height);
+    //AllocImage(output, width, height);
 
     if (output->data == NULL)
     {
@@ -115,7 +149,7 @@ Image* RotateImageCustomDegreesIncomplete(Image* input, int width, int height, i
         return NULL;
     }
 
-    AllocImage(output, width, height);
+    //AllocImage(output, width, height);
 
     if (output->data == NULL)
     {
@@ -137,7 +171,7 @@ Image* RotateImageCustomFile(Image* input, int width, int height, int degrees)
         return NULL;
     }
 
-    AllocImage(output, width, height);
+    //AllocImage(output, width, height);
 
     if (output->data == NULL)
     {
@@ -159,7 +193,7 @@ Image* RotateBilinear(Image* input, int width, int height, int degrees)
         return NULL;
     }
 
-    AllocImage(output, width, height);
+    //AllocImage(output, width, height);
 
     if (output->data == NULL)
     {
@@ -238,46 +272,14 @@ Image* ApplySobelVerticalImage(Image* input, int width, int height)
     return output;
 }
 
-Image* ApplySobelImage(Image* input, int width, int height)
+void ApplySobelImage(Image* input, Image* output)
 {
-    Image* output = malloc(sizeof(Image));
-
-    if (output == NULL)
-    {
-        return NULL;
-    }
-
-    AllocImageGrayscale(output, width, height);
-
-    if (output->data == NULL)
-    {
-        free(output);
-        return NULL;
-    }
-
-    ApplySobel(input->data, output->data, width, height);
-
-    return output;
+    ApplySobel(input->data, output->data, output->width, output->height);
 }
 
-Image* Median(Image* input, int width, int height)
+Image* Median(Image* input, Image* output)
 {
-    Image* output = malloc(sizeof(Image));
-
-    if (output == NULL)
-    {
-        return NULL;
-    }
-
-    AllocImageGrayscale(output, width, height);
-
-    if (output->data == NULL)
-    {
-        free(output);
-        return NULL;
-    }
-
-    MedianFilter(input->data, output->data, width, height);
+    MedianFilter(input->data, output->data, output->width, output->height);
 
     return output;
 }

@@ -7,27 +7,24 @@ typedef struct {
     unsigned char* data;
 } Image;
 
+typedef enum {
+    SUCCESS = 0,
+    ERROR = -1,
+    INVALID_PARAMETERS = -2,
+    INVALID_TYPE = -3
+} AllocationStatus;
+
+typedef enum {
+    RGB,
+    Grayscale
+} ImageType;
+
 /**
  * @file
  */
 
-/**
- * @brief Allocate memory for an Image structure and initialize its properties.
- *
- * This function allocates memory for an `Image` structure and initializes its width,
- * height, and data properties. It is used to prepare the `Image` structure for further
- * image data manipulation.
- *
- * @param image Pointer to the `Image` structure to be allocated and initialized.
- * @param width The desired width of the image.
- * @param height The desired height of the image.
- *
- * @note After calling this function, the `image->data` member is allocated and should
- *       be properly deallocated when it is no longer needed to prevent memory leaks.
- *
- * @see Image, FreeImage
- */
-void AllocImage(Image* image, int width, int height);
+
+int32_t AllocImage(Image** image, int width, int height, ImageType type);
 
 /**
  * @brief Allocate memory for a grayscale Image structure and initialize its properties.
@@ -296,7 +293,7 @@ Image* ApplySobelVerticalImage(Image* input, int width, int height);
  *
  * @see Image, AllocImageGrayscale, FreeImage
  */
-Image* ApplySobelImage(Image* input, int width, int height);
+void ApplySobelImage(Image* input, Image* output);
 
 /**
  * @brief Apply a median filter to an image.
@@ -320,6 +317,6 @@ Image* ApplySobelImage(Image* input, int width, int height);
  *
  * @see Image, AllocImageGrayscale, FreeImage
  */
-Image* Median(Image* input, int width, int height);
+Image* Median(Image* input, Image* output);
 
 #endif
