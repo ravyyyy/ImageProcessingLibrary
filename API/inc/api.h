@@ -28,24 +28,6 @@ typedef enum {
 int32_t AllocImage(Image** image, int width, int height, ImageType type);
 
 /**
- * @brief Allocate memory for a grayscale Image structure and initialize its properties.
- *
- * This function allocates memory for an `Image` structure representing a grayscale image
- * and initializes its width, height, and data properties. It is used to prepare the
- * `Image` structure for further grayscale image data manipulation.
- *
- * @param image Pointer to the `Image` structure to be allocated and initialized.
- * @param width The desired width of the grayscale image.
- * @param height The desired height of the grayscale image.
- *
- * @note After calling this function, the `image->data` member is allocated and should
- *       be properly deallocated when it is no longer needed to prevent memory leaks.
- *
- * @see Image, FreeImage, AllocImage
- */
-void AllocImageGrayscale(Image* image, int width, int height);
-
-/**
  * @brief Deallocate memory associated with an Image structure.
  *
  * This function frees the memory allocated for an `Image` structure, including its
@@ -271,7 +253,7 @@ Image* ApplyConvertImage(Image* input, int width, int height);
  *
  * @see Image, AllocImageGrayscale, FreeImage
  */
-Image* ApplySobelVerticalImage(Image* input, int width, int height);
+void ApplySobelVerticalImage(Image* input, Image* output);
 
 /**
  * @brief Apply the Sobel edge detection filter to an image.

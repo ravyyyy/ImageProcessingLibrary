@@ -26,7 +26,7 @@ ImageType ReadWindow(char fileName[], int* windowWidth, int* windowHeight, int* 
         return Grayscale;
     } 
     printf("Invalid input type choice!");
-    return -1;
+    return Invalid;
 }
 
 int CheckFile(FILE* file, Image** input, Image** output)
@@ -524,54 +524,48 @@ int main()
                 free(input->data);
                 FreeImage(output);
 
-                break;
+                break;*/
             case 10:
                 printf("SOBEL FILTER VERTICAL\n\n");
 
-                printf("Enter name of file: ");
-                scanf("%s", fileName);
-                
-                printf("Enter width of input: ");
-                scanf("%d", &windowWidth);
-                printf("Enter height of input: ");
-                scanf("%d", &windowHeight);
-
-                AllocImageGrayscale(input, windowWidth, windowHeight);
-                if (input->data == NULL)
-                {
-                    printf("Memory allocation failed!");
-                    return 1;
-                }
+                ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
 
                 inputFile = fopen(fileName, "rb");
-                if (inputFile == NULL)
-                {
-                    printf("File could not be opened!");
-                    free(input->data);
-                    return 1;
-                }
+                CheckFile(inputFile, &input, &output);
 
-                fread(input->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
+                status = AllocImage(&input, windowWidth, windowHeight, type);
+
+                if (type == RGB)
+                {
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
+                }
+                else if (type == Grayscale)
+                {
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
+                }
                 fclose(inputFile);
 
-                output = ApplySobelVerticalinput(input, windowWidth, windowHeight);
+                AllocImage(&output, windowWidth, windowHeight, type);
+                ApplySobelVerticalImage(input, output);
 
                 rawFile = fopen("sobel_vertical.raw", "wb");
+                CheckFile(rawFile, &input, &output);
 
-                if (rawFile == NULL)
+                if (type == RGB)
                 {
-                    printf("File could not be opened!");
-                    FreeImage(output);
-                    return 1;
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
                 }
-
-                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                else if (type == Grayscale)
+                {
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                }
+                
                 fclose(rawFile);
 
-                free(input->data);
+                FreeImage(input);
                 FreeImage(output);
 
-                break;*/
+                break;
             case 11:
                 printf("FULL SOBEL FILTER\n\n");
 
@@ -586,7 +580,7 @@ int main()
                 {
                     fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
                 }
-                else
+                else if (type == Grayscale)
                 {
                     fread(input->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
                 }
@@ -602,7 +596,7 @@ int main()
                 {
                     fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
                 }
-                else
+                else if (type == Grayscale)
                 {
                     fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
                 }
@@ -627,7 +621,7 @@ int main()
                 {
                     fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
                 }
-                else
+                else if (type == Grayscale)
                 {
                     fread(input->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
                 }
@@ -643,7 +637,7 @@ int main()
                 {
                     fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
                 }
-                else
+                else if (type == Grayscale)
                 {
                     fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
                 }
