@@ -29,6 +29,20 @@ ImageType ReadWindow(char fileName[], int* windowWidth, int* windowHeight, int* 
     return -1;
 }
 
+int CheckFile(FILE* file, Image** input, Image** output)
+{
+    if (file == NULL)
+    {
+        printf("File can not be opened!");
+        FreeImage((*input));
+        FreeImage((*output));
+        fclose(file);
+        return 1;
+    }
+
+    return 0;
+}
+
 int main()
 {
     Image* input = NULL;
@@ -564,12 +578,7 @@ int main()
                 type = ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
 
                 inputFile = fopen(fileName, "rb");
-                if (inputFile == NULL)
-                {
-                    printf("File could not be opened!");
-                    free(input->data);
-                    return 1;
-                }
+                CheckFile(inputFile, &input, &output);
                 
                 status = AllocImage(&input, windowWidth, windowHeight, type);
 
@@ -587,14 +596,7 @@ int main()
                 ApplySobelImage(input, output);
 
                 rawFile = fopen("sobel.raw", "wb");
-
-                if (rawFile == NULL)
-                {
-                    printf("File could not be opened!");
-                    FreeImage(input);
-                    FreeImage(output);
-                    return 1;
-                }
+                CheckFile(rawFile, &input, &output);
 
                 if (type == RGB)
                 {
@@ -617,12 +619,7 @@ int main()
                 type = ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
 
                 inputFile = fopen(fileName, "rb");
-                if (inputFile == NULL)
-                {
-                    printf("File could not be opened!");
-                    free(input->data);
-                    return 1;
-                }
+                CheckFile(inputFile, &input, &output);
 
                 status = AllocImage(&input, windowWidth, windowHeight, type);
 
@@ -640,12 +637,7 @@ int main()
                 Median(input, output);
 
                 rawFile = fopen("median_filter.raw", "wb");
-                if (rawFile == NULL)
-                {
-                    printf("File could not be opened!");
-                    FreeImage(output);
-                    return 1;
-                }
+                CheckFile(rawFile, &input, &output);
 
                 if (type == RGB)
                 {
