@@ -136,7 +136,7 @@ Image* RotateImageCustomDegrees(Image* input, int width, int height, int degrees
  *
  * @see Image, AllocImage, FreeImage
  */
-Image* RotateImageCustomDegreesIncomplete(Image* input, int width, int height, int degrees);
+void RotateImageCustomDegreesIncomplete(Image* input, Image* output, int degrees);
 
 /**
  * @brief Rotate a specific image by a specified angle in degrees.

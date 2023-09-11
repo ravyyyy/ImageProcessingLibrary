@@ -214,7 +214,7 @@ int main()
                 free(input->data);
                 FreeImage(output);
 
-                break;
+                break;*/
             case 4:
                 printf("ROTATE CUSTOM (incomplete)\n\n");
                 printf("Enter the degrees: ");
@@ -229,54 +229,46 @@ int main()
                 printf("Enter height of input: ");
                 scanf("%d", &windowHeight);
 
-                //AllocImage(input, windowWidth, windowHeight);
+                printf("Enter type of input (0 for RGB, 1 for Grayscale): ");
+                scanf("%d", &inputTypeChoice);
+
+                status = AllocImage(&input, windowWidth, windowHeight, inputTypeChoice);
 
                 if (choiceCustom == 1)
                 {
-                    outputFile = fopen("gradient.raw", "rb");
+                    inputFile = fopen("gradient.raw","rb");
+                    CheckFile(inputFile, &input, &output);
 
-                    if (outputFile == NULL)
-                    {
-                        printf("File could not be opened!");
-                        return 1;
-                    }
-
-                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
-
-                    output = RotateinputCustomDegreesIncomplete(input, windowWidth, windowHeight, degrees);                    
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
                 }
                 else
                 {
-                    outputFile = fopen("siemens_star.raw", "rb");
-
-                    if (outputFile == NULL)
-                    {
-                        printf("File could not be opened!");
-                        return 1;
-                    }
-
-                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
-
-                    output = RotateinputCustomDegreesIncomplete(input, windowWidth, windowHeight, degrees);
+                    inputFile = fopen("siemens_star.raw", "rb");
+                    CheckFile(inputFile, &input, &output);
+                    
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
                 }
 
-                inputFile = fopen("rotated_input_custom_incomplete.raw", "wb");
-                if (inputFile == NULL)
+                status = AllocImage(&output, windowWidth, windowHeight, inputTypeChoice);
+                RotateImageCustomDegreesIncomplete(input, output, degrees);
+
+                outputFile = fopen("rotate_bilinear_grayscale_or_siemens_star_incomplete.raw", "wb");
+                CheckFile(outputFile, &input, &output);
+
+                if (choiceCustom == 1)
                 {
-                    printf("File could not be opened!");
-                    FreeImage(input);
-                    FreeImage(output);
-                    fclose(inputFile);
-                    return 1;
-                } 
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
+                }
+                else
+                {
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, outputFile);
+                }
+                fclose(outputFile);
 
-                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
-                fclose(inputFile);
-
-                free(input->data);
+                FreeImage(input);
                 FreeImage(output);
 
-                break;*/
+                break;
             case 5:
                 printf("ROTATE CUSTOM IMAGE\n\n");
                 type = ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
