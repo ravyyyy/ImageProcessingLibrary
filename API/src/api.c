@@ -199,26 +199,9 @@ Image* RotateBilinear(Image* input, int width, int height, int degrees)
     return output;
 }
 
-Image* ApplySobelHorizontalImage(Image* input, int width, int height)
+void ApplySobelHorizontalImage(Image* input, Image* output)
 {
-    Image* output = malloc(sizeof(Image));
-
-    if (output == NULL)
-    {
-        return NULL;
-    }
-
-    //AllocImageGrayscale(output, width, height);
-
-    if (output->data == NULL)
-    {
-        free(output);
-        return NULL;
-    }
-
-    ApplySobelHorizontal(input->data, output->data, width, height);
-
-    return output;
+    ApplySobelHorizontal(input->data, output->data, output->width, output->height);
 }
 
 void ApplyConvertImage(Image* input, Image* output)

@@ -207,7 +207,7 @@ Image* RotateBilinear(Image* input, int width, int height, int degrees);
  *
  * @see Image, AllocImageGrayscale, FreeImage
  */
-Image* ApplySobelHorizontalImage(Image* input, int width, int height);
+void ApplySobelHorizontalImage(Image* input, Image* output);
 
 /**
  * @brief Convert a color image to grayscale.
