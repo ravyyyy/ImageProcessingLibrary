@@ -221,26 +221,9 @@ Image* ApplySobelHorizontalImage(Image* input, int width, int height)
     return output;
 }
 
-Image* ApplyConvertImage(Image* input, int width, int height)
+void ApplyConvertImage(Image* input, Image* output)
 {
-    Image* output = malloc(sizeof(Image));
-
-    if (output == NULL)
-    {
-        return NULL;
-    }
-
-    //AllocImageGrayscale(output, width, height);
-
-    if (output->data == NULL)
-    {
-        free(output);
-        return NULL;
-    }
-
-    ConvertImage(input->data, output->data, width, height);
-
-    return output;
+    ConvertImage(input->data, output->data, output->width, output->height);
 }
 
 void ApplySobelVerticalImage(Image* input, Image* output)

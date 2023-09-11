@@ -477,54 +477,48 @@ int main()
                 free(input->data);
                 FreeImage(output);
 
-                break;
+                break;*/
             case 9:
                 printf("CONVERT RGB TO GRAYSCALE\n\n");
 
-                printf("Enter name of file: ");
-                scanf("%s", fileName);
-                
-                printf("Enter width of input: ");
-                scanf("%d", &windowWidth);
-                printf("Enter height of input: ");
-                scanf("%d", &windowHeight);
-
-                //AllocImage(input, windowWidth, windowHeight);
-                if (input->data == NULL)
-                {
-                    printf("Memory allocation failed!");
-                    return 1;
-                }
+                ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
 
                 inputFile = fopen(fileName, "rb");
-                if (inputFile == NULL)
-                {
-                    printf("File could not be opened!");
-                    free(input->data);
-                    return 1;
-                }
+                CheckFile(inputFile, &input, &output);
+                
+                status = AllocImage(&input, windowWidth, windowHeight, type);
 
-                fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
+                if (type == RGB)
+                {
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
+                }
+                else if (type == Grayscale)
+                {
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
+                }
                 fclose(inputFile);
 
+                AllocImage(&output, windowWidth, windowHeight, type);
+                ApplyConvertImage(input, output);
+
                 rawFile = fopen("grayscaleimg.raw", "wb");
-                if (rawFile == NULL)
+                CheckFile(rawFile, &input, &output);
+
+                if (type == RGB)
                 {
-                    printf("File could not be opened!");
-                    free(input->data);
-                    fclose(rawFile);
-                    return 1;
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
                 }
-
-                output = ApplyConvertinput(input, windowWidth, windowHeight);
-
-                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                else if (type == Grayscale)
+                {
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                }
+                
                 fclose(rawFile);
 
-                free(input->data);
+                FreeImage(input);
                 FreeImage(output);
 
-                break;*/
+                break;
             case 10:
                 printf("SOBEL FILTER VERTICAL\n\n");
 

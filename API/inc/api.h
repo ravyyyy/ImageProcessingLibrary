@@ -230,7 +230,7 @@ Image* ApplySobelHorizontalImage(Image* input, int width, int height);
  *
  * @see Image, AllocImageGrayscale, FreeImage
  */
-Image* ApplyConvertImage(Image* input, int width, int height);
+void ApplyConvertImage(Image* input, Image* output);
 
 /**
  * @brief Apply the Sobel vertical edge detection filter to an image.
