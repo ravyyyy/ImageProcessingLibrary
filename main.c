@@ -320,7 +320,7 @@ int main()
                 free(input->data);
                 FreeImage(output);
 
-                break;
+                break;*/
             case 6:
                 printf("ROTATE WITH BILINEAR INTERPOLATION\n\n");
                 printf("Enter the degrees: ");
@@ -335,7 +335,10 @@ int main()
                 printf("Enter height of input: ");
                 scanf("%d", &windowHeight);
 
-                //AllocImage(input, windowWidth, windowHeight);
+                printf("Enter type of input (0 for RGB, 1 for Grayscale): ");
+                scanf("%d", &inputTypeChoice);
+
+                status = AllocImage(&input, windowWidth, windowHeight, inputTypeChoice);
                 if (input->data == NULL)
                 {
                     printf("Memory allocation failed!");
@@ -345,50 +348,42 @@ int main()
                 if (choiceCustom == 1)
                 {
                     inputFile = fopen("gradient.raw","rb");
-
-                    if (inputFile == NULL)
-                    {
-                        printf("File can not be opened!");
-                        return 1;
-                    }
+                    CheckFile(inputFile, &input, &output);
 
                     fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
                 }
                 else
                 {
                     inputFile = fopen("siemens_star.raw", "rb");
-
-                    if (inputFile == NULL)
-                    {
-                        printf("File can not be opened!");
-                        return 1;
-                    }
+                    CheckFile(inputFile, &input, &output);
                     
                     fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
                 }
 
-                output = RotateBilinear(input, windowWidth, windowHeight, degrees);
+                status = AllocImage(&output, windowWidth, windowHeight, inputTypeChoice);
+                RotateBilinear(input, output, degrees);
 
                 rawFile = fopen("rotate_bilinear.raw", "wb");
+                CheckFile(rawFile, &input, &output);
 
-                if (rawFile == NULL)
+                if (choiceCustom == 1)
                 {
-                    printf("File can not be opened!");
-                    FreeImage(output);
-                    return 1;
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
                 }
-
-                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                else
+                {
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                }
                 fclose(rawFile);
 
-                free(input->data);
+                FreeImage(input);
                 FreeImage(output);
 
-                break;*/
+                break;
             case 7:
                 printf("ROTATE DOWNLOADED Image\n\n");
 
-                ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
+                type = ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
                 printf("Enter the angle for rotation: ");
                 scanf("%d", &degrees);
 
@@ -407,7 +402,7 @@ int main()
                 }
                 fclose(inputFile);
 
-                AllocImage(&output, windowWidth, windowHeight, type);
+                status = AllocImage(&output, windowWidth, windowHeight, type);
                 RotateBilinear(input, output, degrees);
 
                 rawFile = fopen("downloaded_image_rotated.raw", "wb");
@@ -431,7 +426,7 @@ int main()
             case 8:
                 printf("SOBEL FILTER HORIZONTAL\n\n");
 
-                ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
+                type = ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
 
                 inputFile = fopen(fileName, "rb");
                 CheckFile(inputFile, &input, &output);
@@ -448,7 +443,7 @@ int main()
                 }
                 fclose(inputFile);
 
-                AllocImage(&output, windowWidth, windowHeight, type);
+                status = AllocImage(&output, windowWidth, windowHeight, type);
                 ApplySobelHorizontalImage(input, output);
 
                 rawFile = fopen("sobel_horizontal.raw", "wb");
@@ -472,7 +467,7 @@ int main()
             case 9:
                 printf("CONVERT RGB TO GRAYSCALE\n\n");
 
-                ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
+                type = ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
 
                 inputFile = fopen(fileName, "rb");
                 CheckFile(inputFile, &input, &output);
@@ -489,7 +484,7 @@ int main()
                 }
                 fclose(inputFile);
 
-                AllocImage(&output, windowWidth, windowHeight, type);
+                status = AllocImage(&output, windowWidth, windowHeight, type);
                 ApplyConvertImage(input, output);
 
                 rawFile = fopen("grayscaleimg.raw", "wb");
@@ -513,7 +508,7 @@ int main()
             case 10:
                 printf("SOBEL FILTER VERTICAL\n\n");
 
-                ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
+                type = ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
 
                 inputFile = fopen(fileName, "rb");
                 CheckFile(inputFile, &input, &output);
@@ -530,7 +525,7 @@ int main()
                 }
                 fclose(inputFile);
 
-                AllocImage(&output, windowWidth, windowHeight, type);
+                status = AllocImage(&output, windowWidth, windowHeight, type);
                 ApplySobelVerticalImage(input, output);
 
                 rawFile = fopen("sobel_vertical.raw", "wb");
@@ -571,7 +566,7 @@ int main()
                 }
                 fclose(inputFile);
 
-                AllocImage(&output, windowWidth, windowHeight, type);
+                status = AllocImage(&output, windowWidth, windowHeight, type);
                 ApplySobelImage(input, output);
 
                 rawFile = fopen("sobel.raw", "wb");
@@ -612,7 +607,7 @@ int main()
                 }
                 fclose(inputFile);
 
-                AllocImage(&output, windowWidth, windowHeight, type);
+                status = AllocImage(&output, windowWidth, windowHeight, type);
                 Median(input, output);
 
                 rawFile = fopen("median_filter.raw", "wb");
