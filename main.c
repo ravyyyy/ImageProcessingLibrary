@@ -88,7 +88,7 @@ int main()
         scanf("%d", &userChoice);
         switch(userChoice)
         {
-            /*case 1:
+            case 1:
                 printf("SIEMENS STAR\n\n");
                 printf("Enter the width: ");
                 scanf("%d", &windowWidth);
@@ -131,7 +131,7 @@ int main()
                 printf("Enter the number of columns: ");
                 scanf("%d", &columnsNumber);
 
-                input = CreateGradientinput(windowWidth, windowHeight, columnsNumber);
+                input = CreateGradientImage(windowWidth, windowHeight, columnsNumber);
 
                 if (input == NULL) 
                 {
@@ -152,7 +152,7 @@ int main()
                 FreeImage(input);
                 fclose(outputFile);
 
-                break;*/
+                break;
             case 3:
                 printf("ROTATE CUSTOM\n\n");
                 printf("Enter the degrees: ");

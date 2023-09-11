@@ -76,7 +76,7 @@ Image* CreateGradientImage(int width, int height, int columnsNumber)
         return NULL;
     }
 
-    //AllocImage(gradientImage, width, height);
+    AllocImage(&gradientImage, width, height, RGB);
 
     if (gradientImage->data == NULL)
     {
@@ -98,7 +98,7 @@ Image* CreateSiemensStar(int width, int height, int radius, int linesNumber)
         return NULL;
     }
 
-    //AllocImage(siemensStar, width, height);
+    AllocImage(&siemensStar, width, height, RGB);
 
     if (siemensStar->data == NULL)
     {
