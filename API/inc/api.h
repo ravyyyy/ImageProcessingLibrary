@@ -111,7 +111,7 @@ Image* CreateGradientImage(int width, int height, int columnsNumber);
  *
  * @see Image, AllocImage, FreeImage
  */
-Image* RotateImageCustomDegrees(Image* input, int width, int height, int degrees);
+void RotateImageCustomDegrees(Image* input, Image* output, int degrees);
 
 /**
  * @brief Rotate an image by a specified angle in degrees (incomplete).
