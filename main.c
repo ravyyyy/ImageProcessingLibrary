@@ -4,6 +4,31 @@
 
 #include "API/inc/api.h"
 
+ImageType ReadWindow(char fileName[], int* windowWidth, int* windowHeight, int* inputTypeChoice)
+{
+    printf("Enter name of file: ");
+    scanf("%s", fileName);
+                
+    printf("Enter width of input: ");
+    scanf("%d", windowWidth);
+    printf("Enter height of input: ");
+    scanf("%d", windowHeight);
+                
+    printf("Enter type of input (0 for RGB, 1 for Grayscale): ");
+    scanf("%d", inputTypeChoice);
+                
+    if (*inputTypeChoice == 0) 
+    {
+        return RGB;
+    }
+    else if (*inputTypeChoice == 1) 
+    {
+        return Grayscale;
+    } 
+    printf("Invalid input type choice!");
+    return -1;
+}
+
 int main()
 {
     Image* input = NULL;
@@ -536,30 +561,7 @@ int main()
             case 11:
                 printf("FULL SOBEL FILTER\n\n");
 
-                printf("Enter name of file: ");
-                scanf("%s", fileName);
-                
-                printf("Enter width of input: ");
-                scanf("%d", &windowWidth);
-                printf("Enter height of input: ");
-                scanf("%d", &windowHeight);
-                
-                printf("Enter type of input (0 for RGB, 1 for Grayscale): ");
-                scanf("%d", &inputTypeChoice);
-                
-                if (inputTypeChoice == 0) 
-                {
-                    type = RGB;
-                }
-                else if (inputTypeChoice == 1) 
-                {
-                    type = Grayscale;
-                } 
-                else
-                {
-                    printf("Invalid input type choice!");
-                    return 1;
-                }
+                type = ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
 
                 inputFile = fopen(fileName, "rb");
                 if (inputFile == NULL)
@@ -609,26 +611,10 @@ int main()
                 FreeImage(output);
 
                 break;
-            /*case 12:
+            case 12:
                 printf("MEDIAN FILTER\n\n");
 
-                printf("Enter name of file: ");
-                scanf("%s", fileName);
-                
-                printf("Enter width of input: ");
-                scanf("%d", &windowWidth);
-                printf("Enter height of input: ");
-                scanf("%d", &windowHeight);
-
-                printf("Enter type of input: ");
-                scanf("%d", &type);
-
-                AllocImage(input, windowWidth, windowHeight, type);
-                if (input->data == NULL)
-                {
-                    printf("Memory allocation failed!");
-                    return 1;
-                }
+                type = ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
 
                 inputFile = fopen(fileName, "rb");
                 if (inputFile == NULL)
@@ -638,13 +624,22 @@ int main()
                     return 1;
                 }
 
-                fread(input->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
+                status = AllocImage(&input, windowWidth, windowHeight, type);
+
+                if (type == RGB)
+                {
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
+                }
+                else
+                {
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
+                }
                 fclose(inputFile);
 
-                //output = Median(input, windowWidth, windowHeight);
+                AllocImage(&output, windowWidth, windowHeight, type);
+                Median(input, output);
 
                 rawFile = fopen("median_filter.raw", "wb");
-
                 if (rawFile == NULL)
                 {
                     printf("File could not be opened!");
@@ -652,13 +647,20 @@ int main()
                     return 1;
                 }
 
-                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                if (type == RGB)
+                {
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                }
+                else
+                {
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                }
                 fclose(rawFile);
 
-                free(input->data);
+                FreeImage(input);
                 FreeImage(output);
 
-                break;*/
+                break;
             case 0:
                 isMenuOpen = false;
                 printf("Goodbye!");

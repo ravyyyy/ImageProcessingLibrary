@@ -277,9 +277,7 @@ void ApplySobelImage(Image* input, Image* output)
     ApplySobel(input->data, output->data, output->width, output->height);
 }
 
-Image* Median(Image* input, Image* output)
+void Median(Image* input, Image* output)
 {
     MedianFilter(input->data, output->data, output->width, output->height);
-
-    return output;
 }

@@ -15,8 +15,9 @@ typedef enum {
 } AllocationStatus;
 
 typedef enum {
-    RGB,
-    Grayscale
+    RGB = 0,
+    Grayscale = 1,
+    Invalid = -1
 } ImageType;
 
 /**
@@ -317,6 +318,6 @@ void ApplySobelImage(Image* input, Image* output);
  *
  * @see Image, AllocImageGrayscale, FreeImage
  */
-Image* Median(Image* input, Image* output);
+void Median(Image* input, Image* output);
 
 #endif
