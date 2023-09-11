@@ -60,7 +60,7 @@ int main()
 
     bool isMenuOpen = true;
     
-    FILE* rawFile;
+    FILE* outputFile;
     FILE* inputFile;
 
     char fileName[100];
@@ -108,18 +108,18 @@ int main()
                     return 1;
                 }
 
-                rawFile = fopen("siemens_star.raw", "wb");
+                outputFile = fopen("siemens_star.raw", "wb");
 
-                if (rawFile == NULL) 
+                if (outputFile == NULL) 
                 {
                     printf("File could not be opened!");
                     FreeImage(input);
                     return 1;
                 }
 
-                fwrite(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                fwrite(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
 
-                fclose(rawFile);
+                fclose(outputFile);
 
                 break;
             case 2:
@@ -139,18 +139,18 @@ int main()
                     return 1;
                 }
 
-                rawFile = fopen("gradient.raw", "wb");
-                if (rawFile == NULL)
+                outputFile = fopen("gradient.raw", "wb");
+                if (outputFile == NULL)
                 {
                     printf("File could not be opened!");
                     FreeImage(input);
                     return 1;
                 }
 
-                fwrite(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                fwrite(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
 
                 FreeImage(input);
-                fclose(rawFile);
+                fclose(outputFile);
 
                 break;
             case 3:
@@ -171,29 +171,29 @@ int main()
 
                 if (choiceCustom == 1)
                 {
-                    rawFile = fopen("gradient.raw", "rb");
+                    outputFile = fopen("gradient.raw", "rb");
 
-                    if (rawFile == NULL)
+                    if (outputFile == NULL)
                     {
                         printf("File could not be opened!");
                         return 1;
                     }
 
-                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
 
                     output = RotateinputCustomDegrees(input, windowWidth, windowHeight, degrees);
                 }
                 else
                 {
-                    rawFile = fopen("siemens_star.raw", "rb");
+                    outputFile = fopen("siemens_star.raw", "rb");
 
-                    if (rawFile == NULL)
+                    if (outputFile == NULL)
                     {
                         printf("File could not be opened!");
                         return 1;
                     }
 
-                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
 
                     output = RotateinputCustomDegrees(input, windowWidth, windowHeight, degrees);
                 }
@@ -233,29 +233,29 @@ int main()
 
                 if (choiceCustom == 1)
                 {
-                    rawFile = fopen("gradient.raw", "rb");
+                    outputFile = fopen("gradient.raw", "rb");
 
-                    if (rawFile == NULL)
+                    if (outputFile == NULL)
                     {
                         printf("File could not be opened!");
                         return 1;
                     }
 
-                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
 
                     output = RotateinputCustomDegreesIncomplete(input, windowWidth, windowHeight, degrees);                    
                 }
                 else
                 {
-                    rawFile = fopen("siemens_star.raw", "rb");
+                    outputFile = fopen("siemens_star.raw", "rb");
 
-                    if (rawFile == NULL)
+                    if (outputFile == NULL)
                     {
                         printf("File could not be opened!");
                         return 1;
                     }
 
-                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
 
                     output = RotateinputCustomDegreesIncomplete(input, windowWidth, windowHeight, degrees);
                 }
@@ -276,51 +276,49 @@ int main()
                 free(input->data);
                 FreeImage(output);
 
-                break;
+                break;*/
             case 5:
-                printf("ROTATE CUSTOM input\n\n");
-                printf("Enter name of file: ");
-                scanf("%s", fileName);
-    
+                printf("ROTATE CUSTOM IMAGE\n\n");
+                type = ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
                 printf("Enter the degrees: ");
                 scanf("%d", &degrees);
 
-                printf("Enter width of input: ");
-                scanf("%d", &windowWidth);
-                printf("Enter height of input: ");
-                scanf("%d", &windowHeight);
-
                 inputFile = fopen(fileName, "rb");
-                if (inputFile == NULL)
+                CheckFile(inputFile, &input, &output);
+
+                status = AllocImage(&input, windowWidth, windowHeight, type);
+
+                if (type == RGB)
                 {
-                    printf("input file could not be opened!");
-                    return 1;
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
                 }
-
-                //AllocImage(input, windowWidth ,windowHeight);
-                fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
-
+                else if (type == Grayscale)
+                {
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
+                }
                 fclose(inputFile);
 
-                output = RotateinputCustomFile(input, windowWidth, windowHeight, degrees);
+                status = AllocImage(&output, windowWidth, windowHeight, type);
+                RotateImageCustomFile(input, output, degrees);
 
-                FILE* rawFile = fopen("rotated_input_custom2.raw", "wb");
+                outputFile = fopen("rotate_custom_image.raw", "wb");
+                CheckFile(outputFile, &input, &output);
 
-                if (rawFile == NULL)
+                if (type == RGB)
                 {
-                    printf("File could not be opened!");
-                    FreeImage(input);
-                    FreeImage(output);
-                    return 1;
-                } 
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
+                }
+                else if (type == Grayscale)
+                {
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, outputFile);
+                }
+                
+                fclose(outputFile);
 
-                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
-                fclose(rawFile);
-
-                free(input->data);
+                FreeImage(input);
                 FreeImage(output);
 
-                break;*/
+                break;
             case 6:
                 printf("ROTATE WITH BILINEAR INTERPOLATION\n\n");
                 printf("Enter the degrees: ");
@@ -339,11 +337,6 @@ int main()
                 scanf("%d", &inputTypeChoice);
 
                 status = AllocImage(&input, windowWidth, windowHeight, inputTypeChoice);
-                if (input->data == NULL)
-                {
-                    printf("Memory allocation failed!");
-                    return 1;
-                }
 
                 if (choiceCustom == 1)
                 {
@@ -363,18 +356,18 @@ int main()
                 status = AllocImage(&output, windowWidth, windowHeight, inputTypeChoice);
                 RotateBilinear(input, output, degrees);
 
-                rawFile = fopen("rotate_bilinear.raw", "wb");
-                CheckFile(rawFile, &input, &output);
+                outputFile = fopen("rotate_bilinear_grayscale_or_siemens_star.raw", "wb");
+                CheckFile(outputFile, &input, &output);
 
                 if (choiceCustom == 1)
                 {
-                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
                 }
                 else
                 {
-                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, outputFile);
                 }
-                fclose(rawFile);
+                fclose(outputFile);
 
                 FreeImage(input);
                 FreeImage(output);
@@ -405,19 +398,19 @@ int main()
                 status = AllocImage(&output, windowWidth, windowHeight, type);
                 RotateBilinear(input, output, degrees);
 
-                rawFile = fopen("downloaded_image_rotated.raw", "wb");
-                CheckFile(rawFile, &input, &output);
+                outputFile = fopen("downloaded_image_rotated.raw", "wb");
+                CheckFile(outputFile, &input, &output);
 
                 if (type == RGB)
                 {
-                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
                 }
                 else if (type == Grayscale)
                 {
-                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, outputFile);
                 }
                 
-                fclose(rawFile);
+                fclose(outputFile);
 
                 FreeImage(input);
                 FreeImage(output);
@@ -446,19 +439,19 @@ int main()
                 status = AllocImage(&output, windowWidth, windowHeight, type);
                 ApplySobelHorizontalImage(input, output);
 
-                rawFile = fopen("sobel_horizontal.raw", "wb");
-                CheckFile(rawFile, &input, &output);
+                outputFile = fopen("sobel_horizontal.raw", "wb");
+                CheckFile(outputFile, &input, &output);
 
                 if (type == RGB)
                 {
-                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
                 }
                 else if (type == Grayscale)
                 {
-                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, outputFile);
                 }
                 
-                fclose(rawFile);
+                fclose(outputFile);
 
                 FreeImage(input);
                 FreeImage(output);
@@ -487,19 +480,19 @@ int main()
                 status = AllocImage(&output, windowWidth, windowHeight, type);
                 ApplyConvertImage(input, output);
 
-                rawFile = fopen("grayscaleimg.raw", "wb");
-                CheckFile(rawFile, &input, &output);
+                outputFile = fopen("grayscaleimg.raw", "wb");
+                CheckFile(outputFile, &input, &output);
 
                 if (type == RGB)
                 {
-                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
                 }
                 else if (type == Grayscale)
                 {
-                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, outputFile);
                 }
                 
-                fclose(rawFile);
+                fclose(outputFile);
 
                 FreeImage(input);
                 FreeImage(output);
@@ -528,19 +521,19 @@ int main()
                 status = AllocImage(&output, windowWidth, windowHeight, type);
                 ApplySobelVerticalImage(input, output);
 
-                rawFile = fopen("sobel_vertical.raw", "wb");
-                CheckFile(rawFile, &input, &output);
+                outputFile = fopen("sobel_vertical.raw", "wb");
+                CheckFile(outputFile, &input, &output);
 
                 if (type == RGB)
                 {
-                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
                 }
                 else if (type == Grayscale)
                 {
-                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, outputFile);
                 }
                 
-                fclose(rawFile);
+                fclose(outputFile);
 
                 FreeImage(input);
                 FreeImage(output);
@@ -569,19 +562,19 @@ int main()
                 status = AllocImage(&output, windowWidth, windowHeight, type);
                 ApplySobelImage(input, output);
 
-                rawFile = fopen("sobel.raw", "wb");
-                CheckFile(rawFile, &input, &output);
+                outputFile = fopen("sobel.raw", "wb");
+                CheckFile(outputFile, &input, &output);
 
                 if (type == RGB)
                 {
-                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
                 }
                 else if (type == Grayscale)
                 {
-                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, outputFile);
                 }
                 
-                fclose(rawFile);
+                fclose(outputFile);
 
                 FreeImage(input);
                 FreeImage(output);
@@ -610,18 +603,18 @@ int main()
                 status = AllocImage(&output, windowWidth, windowHeight, type);
                 Median(input, output);
 
-                rawFile = fopen("median_filter.raw", "wb");
-                CheckFile(rawFile, &input, &output);
+                outputFile = fopen("median_filter.raw", "wb");
+                CheckFile(outputFile, &input, &output);
 
                 if (type == RGB)
                 {
-                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, outputFile);
                 }
                 else if (type == Grayscale)
                 {
-                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, outputFile);
                 }
-                fclose(rawFile);
+                fclose(outputFile);
 
                 FreeImage(input);
                 FreeImage(output);

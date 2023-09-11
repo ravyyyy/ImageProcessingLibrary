@@ -155,26 +155,9 @@ Image* RotateImageCustomDegreesIncomplete(Image* input, int width, int height, i
     return output;
 }
 
-Image* RotateImageCustomFile(Image* input, int width, int height, int degrees)
+void RotateImageCustomFile(Image* input, Image* output, int angle)
 {
-    Image* output = malloc(sizeof(Image));
-
-    if (output == NULL)
-    {
-        return NULL;
-    }
-
-    //AllocImage(output, width, height);
-
-    if (output->data == NULL)
-    {
-        free(output);
-        return NULL;
-    }
-
-    RotateImageCustom(input->data, output->data, width, height, degrees);
-
-    return output;
+    RotateImageCustom(input->data, output->data, output->width, output->height, angle);
 }
 
 void RotateBilinear(Image* input, Image* output, int angle)

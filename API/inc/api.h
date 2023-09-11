@@ -160,7 +160,7 @@ Image* RotateImageCustomDegreesIncomplete(Image* input, int width, int height, i
  *
  * @see Image, AllocImage, FreeImage
  */
-Image* RotateImageCustomFile(Image* input, int width, int height, int degrees);
+void RotateImageCustomFile(Image* input, Image* output, int angle);
 
 /**
  * @brief Rotate an image using bilinear interpolation.
