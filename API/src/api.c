@@ -67,28 +67,6 @@ void FreeImage(Image* image)
     }
 }
 
-Image* CreateGradientImage(int width, int height, int columnsNumber)
-{
-    Image* gradientImage = malloc(sizeof(Image));
-    
-    if (gradientImage == NULL) 
-    {
-        return NULL;
-    }
-
-    AllocImage(&gradientImage, width, height, RGB);
-
-    if (gradientImage->data == NULL)
-    {
-        free(gradientImage);
-        return NULL;
-    }
-
-    DrawGradient(gradientImage->data, width, height, columnsNumber);
-
-    return gradientImage;
-}
-
 Image* CreateSiemensStar(int width, int height, int radius, int linesNumber)
 {
     Image* siemensStar = malloc(sizeof(Image));
@@ -109,6 +87,28 @@ Image* CreateSiemensStar(int width, int height, int radius, int linesNumber)
     DrawStar(siemensStar->data, width, height, radius, linesNumber);
 
     return siemensStar;
+}
+
+Image* CreateGradientImage(int width, int height, int columnsNumber)
+{
+    Image* gradientImage = malloc(sizeof(Image));
+    
+    if (gradientImage == NULL) 
+    {
+        return NULL;
+    }
+
+    AllocImage(&gradientImage, width, height, RGB);
+
+    if (gradientImage->data == NULL)
+    {
+        free(gradientImage);
+        return NULL;
+    }
+
+    DrawGradient(gradientImage->data, width, height, columnsNumber);
+
+    return gradientImage;
 }
 
 void RotateImageCustomDegrees(Image* input, Image* output, int degrees)
