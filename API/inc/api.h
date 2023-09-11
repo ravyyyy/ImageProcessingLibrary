@@ -184,7 +184,7 @@ Image* RotateImageCustomFile(Image* input, int width, int height, int degrees);
  *
  * @see Image, AllocImage, FreeImage
  */
-Image* RotateBilinear(Image* input, int width, int height, int degrees);
+void RotateBilinear(Image* input, Image* output, int angle);
 
 /**
  * @brief Apply the Sobel horizontal edge detection filter to an image.

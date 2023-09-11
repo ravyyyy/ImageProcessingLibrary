@@ -177,26 +177,9 @@ Image* RotateImageCustomFile(Image* input, int width, int height, int degrees)
     return output;
 }
 
-Image* RotateBilinear(Image* input, int width, int height, int degrees)
+void RotateBilinear(Image* input, Image* output, int angle)
 {
-    Image* output = malloc(sizeof(Image));
-
-    if (output == NULL)
-    {
-        return NULL;
-    }
-
-    //AllocImage(output, width, height);
-
-    if (output->data == NULL)
-    {
-        free(output);
-        return NULL;
-    }
-
-    RotateImageBilinear(input->data, output->data, width, height, degrees);
-
-    return output;
+    RotateImageBilinear(input->data, output->data, output->width, output->height, angle);
 }
 
 void ApplySobelHorizontalImage(Image* input, Image* output)

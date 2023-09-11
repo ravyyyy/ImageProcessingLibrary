@@ -75,11 +75,11 @@ int main()
         printf("2. Draw a Gradient\n");
         printf("3. Rotate with custom degrees\n");
         printf("4. Rotate with custom degrees (incomplete)\n");
-        printf("5. Rotate a specified input\n");
+        printf("5. Rotate a specified image\n");
         printf("6. Rotate with custom degrees using bilinear interpolation\n");
-        printf("7. Rotate downloaded input\n");
+        printf("7. Rotate downloaded image\n");
         printf("8. Sobel filter horizontal\n");
-        printf("9. Convert RGB input to Grayscale\n");
+        printf("9. Convert RGB image to Grayscale\n");
         printf("10. Sobel filter vertical\n");
         printf("11. Full Sobel filter\n");
         printf("12. Median filter\n");
@@ -384,54 +384,50 @@ int main()
                 free(input->data);
                 FreeImage(output);
 
-                break;
+                break;*/
             case 7:
-                printf("ROTATE DOWNLOADED input\n\n");
+                printf("ROTATE DOWNLOADED Image\n\n");
 
-                printf("Enter name of file: ");
-                scanf("%s", fileName);
-
-                printf("Enter the degrees: ");
+                ReadWindow(fileName, &windowWidth, &windowHeight, &inputTypeChoice);
+                printf("Enter the angle for rotation: ");
                 scanf("%d", &degrees);
-                
-                printf("Enter width of input: ");
-                scanf("%d", &windowWidth);
-                printf("Enter height of input: ");
-                scanf("%d", &windowHeight);
-
-                //AllocImage(input, windowWidth, windowHeight);
-                if (input->data == NULL)
-                {
-                    printf("Memory allocation failed!");
-                    return 1;
-                }
 
                 inputFile = fopen(fileName, "rb");
-                if (inputFile == NULL)
+                CheckFile(inputFile, &input, &output);
+
+                status = AllocImage(&input, windowWidth, windowHeight, type);
+
+                if (type == RGB)
                 {
-                    printf("File could not be opened!");
-                    free(input->data);
-                    return 1;
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight * 3, inputFile);
                 }
-
-                output = RotateBilinear(input, windowWidth, windowHeight, degrees);
-
-                rawFile = fopen("rotate_bilinear_custom.raw", "wb");
-
-                if (rawFile == NULL)
+                else if (type == Grayscale)
                 {
-                    printf("File can not be opened!");
-                    FreeImage(output);
-                    return 1;
+                    fread(input->data, sizeof(unsigned char), windowWidth * windowHeight, inputFile);
+                }
+                fclose(inputFile);
+
+                AllocImage(&output, windowWidth, windowHeight, type);
+                RotateBilinear(input, output, degrees);
+
+                rawFile = fopen("downloaded_image_rotated.raw", "wb");
+                CheckFile(rawFile, &input, &output);
+
+                if (type == RGB)
+                {
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
+                }
+                else if (type == Grayscale)
+                {
+                    fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight, rawFile);
                 }
                 
-                fwrite(output->data, sizeof(unsigned char), windowWidth * windowHeight * 3, rawFile);
                 fclose(rawFile);
 
-                free(input->data);
+                FreeImage(input);
                 FreeImage(output);
 
-                break;*/
+                break;
             case 8:
                 printf("SOBEL FILTER HORIZONTAL\n\n");
 
